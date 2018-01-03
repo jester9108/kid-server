@@ -1,0 +1,32 @@
+{
+  "name": "sample-project",
+  "version": "1.0.0",
+  "description": "Sample API server",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aloey/sample-project.git"
+  },
+  "author": "Jun <jun.parkc@gmail.com> (https://github.com/aloey)",
+  "license": "MIT",
+  "homepage": "https://github.com/aloey/sample-project",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "moment-timezone": "^0.5.14",
+    "mongodb": "^3.0.0-rc0",
+    "mongoose": "^4.13.7",
+    "request-promise": "^4.2.2",
+    "tracer": "^0.8.11"
+  },
+  "devDependencies": {
+    "eslint": "^4.13.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0"
+  }
+}
