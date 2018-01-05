@@ -9,14 +9,14 @@ mongoose.Promise = require('bluebird').Promise;
 let db;
 
 const dbPromise = new Promise((resolve, reject) => {
-    const dbUri = `mongodb://${process.env.DB_USER}:${process.env.DB_PW}@ds123400.mlab.com:23400/${process.env.DB_HOST}`;
+    const dbUri = `mongodb://${process.env.DB_USER}:${process.env.DB_PW}@${process.env.DB_HOST}`;
     db = mongoose.createConnection(dbUri, { useMongoClient: true });
     db.once('open', () => {
-        logger.debug('CastrDB connected');
+        logger.debug('TokenDB connected');
         resolve(db);
     });
     db.on('error', (err) => {
-        logger.error('CastrDB connection failed');
+        logger.error('TokenDB connection failed');
         reject(new Error(err.message));
     });
 });

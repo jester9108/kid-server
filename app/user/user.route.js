@@ -1,15 +1,15 @@
-// app/sample/sample.route.js
+// app/user/user.route.js
 
 'use strict';
 
 const express = require('express');
-const sampleService = require('./sample.service');
+const userService = require('./user.service');
 
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
     try {
-        res.json(await sampleService.sampleMethod());
+        res.json(await userService.userMethod());
     } catch (err) {
         next(err);
     }

@@ -1,9 +1,9 @@
-// app/sample/sample.model.js
+// app/transaction/transaction.model.js
 
 const db = require('../db').db;
 const mongoose = require('../db').mongoose;
 
-const sampleSchema = new mongoose.Schema(
+const transactionSchema = new mongoose.Schema(
     {
         _id: mongoose.SchemaTypes.ObjectId,
         numberKey: { type: Number, required: true },
@@ -25,4 +25,4 @@ const sampleSchema = new mongoose.Schema(
     }
 );
 
-exports.Model = db.model('Sample', sampleSchema);
+exports.Model = db.model('Transaction', transactionSchema);

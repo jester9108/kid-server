@@ -7,16 +7,24 @@ require('dotenv').config();
 const express = require('express');
 // const cors = require('cors');
 const bodyParser = require('body-parser');
+const oAuth2Server = require('node-oauth2-server');
 const mongoDB = require('./app/db');
 const logger = require('./app/utils').logger;
 const constants = require('./app/constants');
+const oAuthModel = require('./app/auth/authToken.model');
 
 const app = express();
 const port = process.env.PORT;
 
 // app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '100mb' }));
+app.oauth = oAuth2Server({
+    model: oAuthModel,
+    grants: ['password'],
+    debug: true,
+});
+app.use(app.oauth.errorHandler());
 
 mongoDB.isReady()
     .then(() => {
@@ -28,8 +36,8 @@ mongoDB.isReady()
             next();
         });
 
-        const routes = require('./app/routes'); // eslint-disable-line global-require
-        app.use('/', routes);
+        const routes = require('./app/routes')(app.oauth); // eslint-disable-line global-require
+        app.use('/api', routes);
 
         app.use((err, req, res, next) => {
             if (err) {
