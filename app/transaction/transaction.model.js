@@ -5,24 +5,18 @@ const mongoose = require('../db').mongoose;
 
 const transactionSchema = new mongoose.Schema(
     {
-        _id: mongoose.SchemaTypes.ObjectId,
-        numberKey: { type: Number, required: true },
-        stringKey: { type: String, enum: ['A', 'B', 'C'], required: true },
-        dateKey: { type: Date, default: new Date() },
-        booleanKey: { type: Boolean, required: false },
-        arrayKey: { type: [String], required: false },
-        objectKey: {
-            _id: false,
-            key0: Object,
-            key1: Object,
-        },
+        devId: { type: String, required: true },
+        appId: { type: String, required: true },
+        userId: { type: String, required: true },
+        tokenAmt: { type: Number, required: true },
+        description: { type: String, maxlength: 40 },
     },
     {
         timestamps: {
-            updatedAt: 'timeUpdated',
+            updatedAt: false,
             createdAt: 'timeCreated',
         },
     }
 );
 
-exports.Model = db.model('Transaction', transactionSchema);
+exports.Model = db.model('Token-Transaction', transactionSchema);

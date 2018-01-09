@@ -9,11 +9,36 @@ const status = constants.status;
 
 const UserSchema = new mongoose.Schema(
     {
-        // _id: mongoose.SchemaTypes.ObjectId,
-        email: { type: String, unique: true, required: true, trim: true },
+        email: { type: String, unique: true, required: true },
         password: { type: String, required: true },
-        authToken: String,
-        status: { type: Number, enum: Object.values(status), required: true },
+        authToken: { type: String },
+        status: { type: String, enum: Object.values(status), default: status.pending },
+        socialIds: {
+            type: {
+                _id: false,
+                google: { type: String },
+                facebook: { type: String },
+            },
+            default: {},
+        },
+        identity: {
+            type: {
+                _id: false,
+                gender: { type: String, enum: ['MALE', 'FEMALE'], required: true },
+                dob: { type: String, required: true },
+            },
+            required: true,
+        },
+        gameList: {
+            type: [{
+                _id: false,
+                appId: { type: String, required: true },
+                totalTokensEarned: { type: Number, default: 0 },
+            }],
+        },
+        pointsAvailable: { type: Number, default: 0 },
+        totalPointsEarned: { type: Number, default: 0 },
+        dailyMaxEarn: { type: Number, default: 0 },
     },
     {
         timestamps: {
@@ -22,6 +47,21 @@ const UserSchema = new mongoose.Schema(
         },
     }
 );
+
+// hashing a password before saving it to the database
+UserSchema.pre('save', async function (next) {
+    const user = this;
+    try {
+        if (user.isNew) {
+            user.email = user.email.trim();
+            const hash = await bcrypt.hash(user.password, parseInt(process.env.SALT, 10));
+            user.password = hash;
+        }
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
 
 // authenticate input against database
 UserSchema.statics.authenticate = async (email, password, callback) => {
@@ -41,17 +81,5 @@ UserSchema.statics.authenticate = async (email, password, callback) => {
         throw err;
     }
 };
-
-// hashing a password before saving it to the database
-UserSchema.pre('save', async function (next) {
-    const user = this;
-    try {
-        const hash = await bcrypt.hash(user.password, parseInt(process.env.SALT, 10));
-        user.password = hash;
-        next();
-    } catch (err) {
-        next(err);
-    }
-});
 
 exports.Model = db.model('User', UserSchema);

@@ -22,6 +22,7 @@
         "no-underscore-dangle": [
             "warn",
             {
+                "allow": ["_id"],
                 "allowAfterThis": true
             }
         ],

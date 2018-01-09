@@ -1,10 +1,10 @@
-// app/user/user.route.js
+// app/dev/dev.route.js
 
 'use strict';
 
 const express = require('express');
 const constants = require('../constants');
-const userService = require('./user.service');
+const devService = require('./dev.service');
 
 const router = express.Router();
 
@@ -15,7 +15,6 @@ module.exports = (oAuth) => {
                 email: req.body.email,
                 password: req.body.password,
                 passwordConf: req.body.passwordConf,
-                identity: req.body.identity,
             };
             const missingParams = Object.keys(params).filter(key => !params[key]);
             if (missingParams.length > 0) {
@@ -33,8 +32,7 @@ module.exports = (oAuth) => {
                 error.code = 'different_pwds';
                 throw error;
             }
-            if (!params.identity.dob.match(/^\d{4}-\d{2}-\d{2}$/)) throw new Error('Invalid param: \'identity.dob\' must be in YYYY-MM-DD format');
-            res.json(await userService.register(params));
+            res.json(await devService.register(params));
         } catch (err) {
             next(err);
         }
@@ -43,16 +41,20 @@ module.exports = (oAuth) => {
 
     router.use('/', oAuth.authorise());
 
-    router.get('/me', (req, res, next) => {
+    router.get('/me', (req, res) => {
         res.json(req.user);
     });
 
     router.post('/integrate', async (req, res, next) => {
         try {
             const params = {
-                user: req.user,
-                loginType: req.body.loginType,
-                token: req.body.token,
+                devId: req.user._id,
+                name: req.body.name,
+                platform: req.body.platform,
+                googleClientId: req.body.googleClientId,
+                facebookAppToken: req.body.facebookAppToken,
+                tokenIssueConds: req.body.tokenIssueConds,
+                dailyMaxIssue: req.body.dailyMaxIssue,
             };
             const missingParams = Object.keys(params).filter(key => !params[key]);
             if (missingParams.length > 0) {
@@ -60,12 +62,19 @@ module.exports = (oAuth) => {
                 error.code = 'missing_params';
                 throw error;
             }
-            if (!Object.values(constants.loginType).includes(params.loginType)) {
-                const error = new Error(`Invalid param: 'loginType' must be either '${Object.values(constants.loginType).join('\', \'')}'`);
-                error.code = 'invalid_loginType';
+            if (!Object.values(constants.platform).includes(params.platform)) {
+                const error = new Error(`Invalid param: 'platform' must be either '${Object.values(constants.platform).join('\', \'')}'`);
+                error.code = 'invalid_platform';
                 throw error;
             }
-            res.json(await userService.integrateSocialId(params));
+            params.tokenIssueConds.forEach((cond) => {
+                if (!Object.values(constants.tokenIssueConds).includes(cond)) {
+                    const error = new Error(`Invalid param: 'tokenIssueConds' must be either '${Object.values(constants.tokenIssueConds).join('\', \'')}'`);
+                    error.code = 'invalid_token_issue_conditions';
+                    throw error;
+                }
+            });
+            res.json(await devService.integrateApplication(params));
         } catch (err) {
             next(err);
         }

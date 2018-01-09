@@ -85,7 +85,7 @@ const getUser = (email, password, callback) => {
  */
 const saveAccessToken = (token, clientID, expires, user, callback) => {
     // save the accessToken along with the user.id
-    authService.saveAuthToken(token, user._id) // eslint-disable-line no-underscore-dangle
+    authService.saveAuthToken(token, user) 
         .then(() => callback(null))
         .catch(error => callback(error));
 };
@@ -101,8 +101,8 @@ const saveAccessToken = (token, clientID, expires, user, callback) => {
  * @param userId
  * @returns {Promise.<{user: {id: *}, expires: null}>}
  */
-const createAccessTokenFrom = userId => (Promise.resolve({
-    user: { id: userId },
+const createAccessTokenFrom = user => (Promise.resolve({
+    user: user,
     expires: null,
 }));
 
@@ -131,7 +131,7 @@ const createAccessTokenFrom = userId => (Promise.resolve({
  */
 const getAccessToken = (bearerToken, callback) => {
     // try and get the userID from the db using the bearerToken
-    authService.getUserIDFromBearerToken(bearerToken)
+    authService.getUser(bearerToken)
         .then(userID => createAccessTokenFrom(userID))
         .then(accessToken => callback(false, accessToken))
         .catch(error => callback(true, null));

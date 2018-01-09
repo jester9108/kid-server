@@ -9,7 +9,24 @@ const status = {
     pending: 'PENDING',
     deleted: 'DELETED',
 };
+const platform = {
+    android: 'ANDROID',
+    ios: 'IOS',
+};
+const tokenIssueConds = {
+    attendance: 'ATTENDANCE',
+    quest: 'QUEST',
+    playTime: 'PLAYTIME',
+    inAppPurchase: 'IN_APP_PURCHASE',
+};
+const loginType = {
+    google: 'GOOGLE',
+    facebook: 'FACEBOOK',
+};
 
 exports.status = status;
 exports.fullDayMilliseconds = fullDayMilliseconds;
 exports.emailRegex = emailRegex;
+exports.platform = platform;
+exports.tokenIssueConds = tokenIssueConds;
+exports.loginType = loginType;
