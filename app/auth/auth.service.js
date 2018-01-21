@@ -7,25 +7,25 @@ const GoogleAuth = require('google-auth-library');
 
 class AuthService {
     async getUser(email, password) {
-        let devFlag;
+        let storeFlag;
         try {
             if (typeof password === 'undefined') {
                 // Find by bearer token
                 let bearerToken = email;
-                devFlag = bearerToken.substring(0, 4) === 'dev_';
-                if (devFlag) {
-                    bearerToken = bearerToken.substring(4);
-                    return devService.getDeveloperFromBearerToken(bearerToken);
+                storeFlag = bearerToken.substring(0, 6) === 'store_';
+                if (storeFlag) {
+                    bearerToken = bearerToken.substring(6);
+                    return storeService.getStoreFromBearerToken(bearerToken); // eslint-disable-line no-use-before-define
                 }
-                return userService.getUserFromBearerToken(bearerToken);
+                return userService.getUserFromBearerToken(bearerToken); // eslint-disable-line no-use-before-define
             }
             // Find by email & password
-            devFlag = email.slice(-4) === '_dev';
-            if (devFlag) {
-                email = email.slice(0, -4);
-                return devService.getDeveloper(email, password);
+            storeFlag = email.slice(-6) === '_store';
+            if (storeFlag) {
+                email = email.slice(0, -6);
+                return storeService.getStore(email, password); // eslint-disable-line no-use-before-define
             }
-            return userService.getUser(email, password);
+            return userService.getUser(email, password); // eslint-disable-line no-use-before-define
         } catch (err) {
             throw err;
         }
@@ -79,5 +79,5 @@ class AuthService {
 
 module.exports = new AuthService();
 
-const devService = require('../dev/dev.service');
+const storeService = require('../store/store.service');
 const userService = require('../user/user.service');

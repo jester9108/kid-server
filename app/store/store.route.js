@@ -4,7 +4,7 @@
 
 const express = require('express');
 const constants = require('../constants');
-const devService = require('./dev.service');
+const storeService = require('./store.service');
 
 const router = express.Router();
 
@@ -15,6 +15,8 @@ module.exports = (oAuth) => {
                 email: req.body.email,
                 password: req.body.password,
                 passwordConf: req.body.passwordConf,
+                admin: { name: req.body.adminName },
+                settings: { name: req.body.storeName },
             };
             const missingParams = Object.keys(params).filter(key => !params[key]);
             if (missingParams.length > 0) {
@@ -32,17 +34,38 @@ module.exports = (oAuth) => {
                 error.code = 'different_pwds';
                 throw error;
             }
-            res.json(await devService.register(params));
+            res.json(await storeService.register(params));
         } catch (err) {
             next(err);
         }
     });
-    router.post('/login', oAuth.grant());
+    router.post('/login', async (req, res, next) => {
+        if (req.body.username) {
+            req.body.username += '_store';
+        }
+        oAuth.grant()(req, res, next);
+    });
 
-    router.use('/', oAuth.authorise());
+    router.use('/', async (req, res, next) => {
+        if (req.headers.authorization) {
+            const auth = req.headers.authorization.split(' ');
+            req.headers.authorization = `${auth[0]} store_${auth[1]}`;
+        }
+        oAuth.authorise()(req, res, next);
+    });
 
     router.get('/me', (req, res) => {
         res.json(req.user);
+    });
+    
+
+    router.delete('/', async (req, res, next) => {
+        try {
+            if (typeof req.user.id === 'undefined') throw new Error('Invalid access token');
+            res.json(await storeService.deleteStore(req.user));
+        } catch (err) {
+            next(err);
+        }
     });
 
     router.post('/integrate', async (req, res, next) => {
@@ -74,7 +97,31 @@ module.exports = (oAuth) => {
                     throw error;
                 }
             });
-            res.json(await devService.integrateApplication(params));
+            res.json(await storeService.integrateApplication(params));
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.get('/app', async (req, res, next) => {
+        try {
+            const appId = req.query.appId;
+            if (!appId) {
+                const error = new Error('Missing params: \'appId\'');
+                error.code = 'missing_params';
+                throw error;
+            }
+            const containsApp = (function (apps) {
+                let numApps = apps.length;
+                while (numApps) {
+                    const app = apps[numApps - 1];
+                    if (app.id === appId) return true;
+                    numApps -= 1;
+                }
+                return false;
+            }(req.user.applications));
+            if (!containsApp) throw new Error(`Permission error: accessing App (#${appId}) is not permitted`);
+            res.json(await storeService.getUserCountsByAppId(appId));
         } catch (err) {
             next(err);
         }

@@ -9,24 +9,13 @@ const status = {
     pending: 'PENDING',
     deleted: 'DELETED',
 };
-const platform = {
-    android: 'ANDROID',
-    ios: 'IOS',
-};
-const tokenIssueConds = {
-    attendance: 'ATTENDANCE',
-    quest: 'QUEST',
-    playTime: 'PLAYTIME',
-    inAppPurchase: 'IN_APP_PURCHASE',
-};
-const loginType = {
-    google: 'GOOGLE',
-    facebook: 'FACEBOOK',
+const amenities = {
+    parking: 'PARKING',
+    playground: 'PLAYGROUND',
+    big: 'BIG',
 };
 
 exports.status = status;
 exports.fullDayMilliseconds = fullDayMilliseconds;
 exports.emailRegex = emailRegex;
-exports.platform = platform;
-exports.tokenIssueConds = tokenIssueConds;
-exports.loginType = loginType;
+exports.amenities = amenities;

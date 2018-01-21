@@ -4,18 +4,33 @@
 
 const jwt = require('jsonwebtoken');
 const logger = require('../utils').logger;
-const Developer = require('./dev.model').Model;
+const Store = require('./store.model').Model;
 const authMessage = require('../auth/auth.message');
 
 class DevService {
-    async issueToken(transaction) {
+    /* async getUserCountsByAppId(appId) {
         try {
-            const dev = await Developer.findOne({ _id: transaction.devId });
+            const appUsers = await userService.getUsersByAppId(appId); // eslint-disable-line no-use-before-define
+            return {
+                success: true,
+                message: `App (#${appId} user counts fetched`,
+                data: {
+                    userCount: appUsers.length,
+                },
+            };
+        } catch (err) {
+            throw err;
+        }
+    } */
+
+    /* async issueToken(transaction) {
+        try {
+            const dev = await Store.findOne({ _id: transaction.devId });
             // TODO: Check if app daily maximum is not reached
             let numApps = dev.applications.length;
             while (numApps) {
                 const app = dev.applications[numApps - 1];
-                if (app._id === transaction.appId) {
+                if (app.id === transaction.appId) {
                     app.totalTokensIssued += transaction.tokenAmt;
                     break;
                 }
@@ -25,11 +40,11 @@ class DevService {
         } catch (err) {
             throw err;
         }
-    }
+    } */
 
-    async integrateApplication(params) {
+    /* async integrateApplication(params) {
         try {
-            const dev = await Developer.findOne({ _id: params.devId });
+            const dev = await Store.findOne({ _id: params.devId });
             const numApps = dev.applications.length;
             dev.applications.push({
                 name: params.name,
@@ -64,16 +79,16 @@ class DevService {
         } catch (err) {
             throw err;
         }
-    }
+    } */
 
-    async register(devData) {
+    async register(storeData) {
         try {
-            logger.debug('Creating new developer...');
-            const dev = new Developer(devData);
-            await dev.save();
+            logger.debug('Creating new store...');
+            const store = new Store(storeData);
+            await store.save();
             return {
                 success: true,
-                message: `New developer (${dev.email}) created`,
+                message: `New store (${store.email}) created`,
                 data: [],
             };
         } catch (err) {
@@ -91,19 +106,28 @@ class DevService {
         }
     }
 
-    async getDeveloper(email, password) {
+    async getStore(email, password) {
         try {
-            const dev = await Developer.authenticate(email, password);
-            return dev;
+            const store = await Store.authenticate(email, password);
+            return store;
         } catch (err) {
             throw err;
         }
     }
 
-    async getDeveloperFromBearerToken(bearerToken) {
+    async getStoreFromBearerToken(bearerToken) {
         try {
-            const dev = await Developer.findOne({ authToken: bearerToken });
-            return dev;
+            const store = await Store.findOne({ authToken: bearerToken });
+            return store;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async deleteStore(store) {
+        try {
+            const deleteResult = await store.remove();
+            return deleteResult;
         } catch (err) {
             throw err;
         }
@@ -111,3 +135,5 @@ class DevService {
 }
 
 module.exports = new DevService();
+
+const userService = require('../user/user.service');
