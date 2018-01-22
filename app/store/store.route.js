@@ -5,6 +5,7 @@
 const express = require('express');
 const constants = require('../constants');
 const storeService = require('./store.service');
+const logger = require('../utils').logger;
 
 const router = express.Router();
 
@@ -57,15 +58,19 @@ module.exports = (oAuth) => {
         oAuth.authorise()(req, res, next);
     });
     router.use('/', (req, res, next) => {
-        if (typeof req.user.id === 'undefined') next(new Error('Invalid access token'));
-        else next();
+        if (typeof req.user.id === 'undefined') {
+            next(new Error('Invalid access token'));
+        } else {
+            logger.debug(`Entry authorized (${req.user.id})`);
+            next();
+        }
     });
 
     // Change email & password
     router.post('/reauth', async (req, res, next) => {
         try {
             if (!req.body.password) throw new Error('Missing param: \'password\'');
-            res.json(await storeService.reauthenticate(req.user, req.body.password));
+            res.json({ success: await storeService.reauthenticate(req.user, req.body.password) });
         } catch (err) {
             next(err);
         }
@@ -81,8 +86,8 @@ module.exports = (oAuth) => {
             next(err);
         }
     });
-    
-    router.post('change-password', async (req, res, next) => {
+
+    router.post('/change-password', async (req, res, next) => {
         try {
             if (typeof req.user.id === 'undefined') throw new Error('Invalid access token');
             const newPassword = req.body.newPassword;
@@ -90,7 +95,7 @@ module.exports = (oAuth) => {
             if (!newPassword) throw new Error('Missing param: \'newPassword\'');
             if (!newPasswordConf) throw new Error('Missing param: \'newPasswordConf\'');
             if (newPassword !== newPasswordConf) throw new Error('Invalid params: passwords don\'t match');
-            if (req.user.matchPassword(newPassword)) throw new Error('Invalid param: new password must be different');
+            if (await req.user.matchPassword(newPassword)) throw new Error('Invalid param: new password must be different');
             res.json(await storeService.changePassword(req.user, newPassword));
         } catch (err) {
             next(err);
