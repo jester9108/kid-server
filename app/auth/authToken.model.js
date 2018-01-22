@@ -85,7 +85,7 @@ const getUser = (email, password, callback) => {
  */
 const saveAccessToken = (token, clientID, expires, user, callback) => {
     // save the accessToken along with the user.id
-    authService.saveAuthToken(token, user) 
+    authService.saveAuthToken(token, user)
         .then(() => callback(null))
         .catch(error => callback(error));
 };
@@ -130,9 +130,9 @@ const createAccessTokenFrom = user => (Promise.resolve({
  * endpoints that are authenticates
  */
 const getAccessToken = (bearerToken, callback) => {
-    // try and get the userID from the db using the bearerToken
+    // try and get the userObj from the db using the bearerToken
     authService.getUser(bearerToken)
-        .then(userID => createAccessTokenFrom(userID))
+        .then(userObj => createAccessTokenFrom(userObj))
         .then(accessToken => callback(false, accessToken))
         .catch(error => callback(true, null));
 };
