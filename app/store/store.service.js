@@ -6,8 +6,9 @@ const jwt = require('jsonwebtoken');
 const logger = require('../utils').logger;
 const Store = require('./store.model').Model;
 const authMessage = require('../auth/auth.message');
+const constants = require('../constants');
 
-class DevService {
+class StoreService {
     /* async getUserCountsByAppId(appId) {
         try {
             const appUsers = await userService.getUsersByAppId(appId); // eslint-disable-line no-use-before-define
@@ -92,16 +93,6 @@ class DevService {
                 data: [],
             };
         } catch (err) {
-            if (err.code === 11000) {
-                let dupeKey = err.errmsg.split('.$')[1];
-                dupeKey = dupeKey.split(' dup key')[0];
-                dupeKey = dupeKey.substring(0, dupeKey.lastIndexOf('_'));
-                return {
-                    success: false,
-                    message: authMessage.DUPLICATE_KEY(dupeKey),
-                    error: 'duplicate_key',
-                };
-            }
             throw err;
         }
     }
@@ -117,8 +108,51 @@ class DevService {
 
     async getStoreFromBearerToken(bearerToken) {
         try {
-            const store = await Store.findOne({ authToken: bearerToken });
+            const store = await Store.findOne({ authToken: bearerToken, status: { $ne: constants.status.deleted } });
             return store;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async reauthenticate(store, password) {
+        try {
+            const authenticated = await store.matchPassword(password);
+            return authenticated;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async changeEmail(store, newEmail) {
+        try {
+            await Store.checkEmail(newEmail);
+            const oldEmail = store.email;
+            store.email = newEmail;
+            await store.save();
+            return {
+                success: true,
+                message: 'Email succesfully changed',
+                data: {
+                    oldEmail: oldEmail,
+                    newEmail: newEmail,
+                },
+            };
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async changePassword(store, newPassword) {
+        try {
+            const hash = await Store.hashPassword(newPassword);
+            store.password = hash;
+            await store.save();
+            return {
+                success: true,
+                message: 'Password successfully changed',
+                data: [],
+            };
         } catch (err) {
             throw err;
         }
@@ -126,14 +160,23 @@ class DevService {
 
     async deleteStore(store) {
         try {
-            const deleteResult = await store.remove();
-            return deleteResult;
+            store.status = constants.status.deleted;
+            store.authToken = null;
+            await store.save();
+            return {
+                success: true,
+                message: 'Store successfully deleted',
+                data: {
+                    email: store.email,
+                    status: store.status,
+                },
+            };
         } catch (err) {
             throw err;
         }
     }
 }
 
-module.exports = new DevService();
+module.exports = new StoreService();
 
 const userService = require('../user/user.service');

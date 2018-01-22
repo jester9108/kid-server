@@ -39,89 +39,72 @@ module.exports = (oAuth) => {
             next(err);
         }
     });
-    router.post('/login', async (req, res, next) => {
+    router.post('/login', (req, res, next) => {
         if (req.body.username) {
             req.body.username += '_store';
         }
         oAuth.grant()(req, res, next);
     });
 
-    router.use('/', async (req, res, next) => {
+    /** 
+     * Everything below: Use OAuth token to access store data
+     */
+    router.use('/', (req, res, next) => {
         if (req.headers.authorization) {
             const auth = req.headers.authorization.split(' ');
             req.headers.authorization = `${auth[0]} store_${auth[1]}`;
         }
         oAuth.authorise()(req, res, next);
     });
+    router.use('/', (req, res, next) => {
+        if (typeof req.user.id === 'undefined') next(new Error('Invalid access token'));
+        else next();
+    });
+
+    // Change email & password
+    router.post('/reauth', async (req, res, next) => {
+        try {
+            if (!req.body.password) throw new Error('Missing param: \'password\'');
+            res.json(await storeService.reauthenticate(req.user, req.body.password));
+        } catch (err) {
+            next(err);
+        }
+    });
+    router.post('/change-email', async (req, res, next) => {
+        try {
+            if (typeof req.user.id === 'undefined') throw new Error('Invalid access token');
+            const newEmail = req.body.newEmail;
+            if (!newEmail) throw new Error('Missing param: \'newEmail\'');
+            if (req.user.email === newEmail) throw new Error('Invalid param: new email must be different');
+            res.json(await storeService.changeEmail(req.user, newEmail));
+        } catch (err) {
+            next(err);
+        }
+    });
+    
+    router.post('change-password', async (req, res, next) => {
+        try {
+            if (typeof req.user.id === 'undefined') throw new Error('Invalid access token');
+            const newPassword = req.body.newPassword;
+            const newPasswordConf = req.body.newPasswordConf;
+            if (!newPassword) throw new Error('Missing param: \'newPassword\'');
+            if (!newPasswordConf) throw new Error('Missing param: \'newPasswordConf\'');
+            if (newPassword !== newPasswordConf) throw new Error('Invalid params: passwords don\'t match');
+            if (req.user.matchPassword(newPassword)) throw new Error('Invalid param: new password must be different');
+            res.json(await storeService.changePassword(req.user, newPassword));
+        } catch (err) {
+            next(err);
+        }
+    });
 
     router.get('/me', (req, res) => {
         res.json(req.user);
     });
-    
 
-    router.delete('/', async (req, res, next) => {
+    router.delete('/me', async (req, res, next) => {
         try {
             if (typeof req.user.id === 'undefined') throw new Error('Invalid access token');
             res.json(await storeService.deleteStore(req.user));
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    router.post('/integrate', async (req, res, next) => {
-        try {
-            const params = {
-                devId: req.user._id,
-                name: req.body.name,
-                platform: req.body.platform,
-                googleClientId: req.body.googleClientId,
-                facebookAppToken: req.body.facebookAppToken,
-                tokenIssueConds: req.body.tokenIssueConds,
-                dailyMaxIssue: req.body.dailyMaxIssue,
-            };
-            const missingParams = Object.keys(params).filter(key => !params[key]);
-            if (missingParams.length > 0) {
-                const error = new Error(`Missing params: '${missingParams.join('\', \'')}'`);
-                error.code = 'missing_params';
-                throw error;
-            }
-            if (!Object.values(constants.platform).includes(params.platform)) {
-                const error = new Error(`Invalid param: 'platform' must be either '${Object.values(constants.platform).join('\', \'')}'`);
-                error.code = 'invalid_platform';
-                throw error;
-            }
-            params.tokenIssueConds.forEach((cond) => {
-                if (!Object.values(constants.tokenIssueConds).includes(cond)) {
-                    const error = new Error(`Invalid param: 'tokenIssueConds' must be either '${Object.values(constants.tokenIssueConds).join('\', \'')}'`);
-                    error.code = 'invalid_token_issue_conditions';
-                    throw error;
-                }
-            });
-            res.json(await storeService.integrateApplication(params));
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    router.get('/app', async (req, res, next) => {
-        try {
-            const appId = req.query.appId;
-            if (!appId) {
-                const error = new Error('Missing params: \'appId\'');
-                error.code = 'missing_params';
-                throw error;
-            }
-            const containsApp = (function (apps) {
-                let numApps = apps.length;
-                while (numApps) {
-                    const app = apps[numApps - 1];
-                    if (app.id === appId) return true;
-                    numApps -= 1;
-                }
-                return false;
-            }(req.user.applications));
-            if (!containsApp) throw new Error(`Permission error: accessing App (#${appId}) is not permitted`);
-            res.json(await storeService.getUserCountsByAppId(appId));
         } catch (err) {
             next(err);
         }

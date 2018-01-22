@@ -8,8 +8,8 @@ const constants = require('../constants');
 const status = constants.status;
 const amenities = constants.amenities;
 
-function arrayLimit(val) { return val.length <= 10; }
-function ageRange(val) { return val.max >= val.min; }
+function checkArraySize(val) { return val.length <= 10; }
+function checkAge(val) { return val.max >= val.min; }
 
 const AdminSchema = new mongoose.Schema({
     _id: false,
@@ -23,7 +23,7 @@ const SettingsSchema = new mongoose.Schema({
     description: { type: String, maxlength: 140, required: false },
     phone: { type: String, required: false },
     website: { type: String, required: false },
-    tag: { type: [String], validate: [arrayLimit, '{PATH} exceeds the limit of 10'], required: false },
+    tag: { type: [String], validate: [checkArraySize, '{PATH} exceeds the limit of 10'], required: false },
     age: {
         type: {
             _id: false,
@@ -31,7 +31,7 @@ const SettingsSchema = new mongoose.Schema({
             max: { type: Number, min: 0, max: 18 },
         },
         default: { min: 0, max: 18 },
-        validate: [ageRange, '{PATH}.max must be greater than or equal to {PATH}.min'],
+        validate: [checkAge, '{PATH}.max must be greater than or equal to {PATH}.min'],
     },
     maxCapacity: { type: Number, min: 1, default: 100 },
     openHour: {
@@ -51,7 +51,7 @@ const ProductSchema = new mongoose.Schema({
     price: { type: Number, min: 0, required: true },
     description: { type: String, maxlength: 140, required: true },
     quantity: { type: Number, min: 1, default: 1 },
-    tag: { type: [String], validate: [arrayLimit, '{PATH} exceeds the limit of 10'], required: false },
+    tag: { type: [String], validate: [checkArraySize, '{PATH} exceeds the limit of 10'], required: false },
     note: { type: String, maxlength: 140, required: false },
     refundable: { type: Boolean, default: false },
     refundWindow: {
@@ -73,7 +73,7 @@ const BankAccountSchema = new mongoose.Schema({
 
 const StoreSchema = new mongoose.Schema(
     {
-        email: { type: String, unique: true, required: true },
+        email: { type: String, required: true },
         password: { type: String, required: true },
         authToken: { type: String, required: false },
         status: { type: String, enum: Object.values(status), default: status.pending },
@@ -104,13 +104,14 @@ const StoreSchema = new mongoose.Schema(
     }
 );
 
-// hashing a password before saving it to the database
+// Hashing a password before saving it to the database
 StoreSchema.pre('save', async function (next) {
     const store = this;
     try {
         if (store.isNew) {
             store.email = store.email.trim();
-            const hash = await bcrypt.hash(store.password, parseInt(process.env.SALT, 10));
+            await store.schema.statics.checkEmail(store.email);
+            const hash = await store.schema.statics.hashPassword(store.password, parseInt(process.env.SALT, 10));
             store.password = hash;
         }
         next();
@@ -119,20 +120,50 @@ StoreSchema.pre('save', async function (next) {
     }
 });
 
-// authenticate input against database
-StoreSchema.statics.authenticate = async (email, password, callback) => {
+StoreSchema.statics.hashPassword = async function (password) {
     try {
-        const store = await db.model('Store').findOne({ email: email });
+        return bcrypt.hash(password, parseInt(process.env.SALT, 10));
+    } catch (err) {
+        throw err;
+    }
+};
+
+// Authenticate input against database
+StoreSchema.statics.authenticate = async function (email, password) {
+    try {
+        const Store = this; // db.model('Store')
+        const store = await Store.findOne({ email: email, status: { $ne: status.deleted } });
         if (!store) {
             const error = new Error('No store with the given \'email\'');
             error.status = 401;
             throw error;
         }
-        const authenticated = await bcrypt.compare(password, store.password);
+        const authenticated = await store.matchPassword(password);
         if (authenticated) return store;
         const error = new Error('Incorrect password');
         error.status = 401;
         throw error;
+    } catch (err) {
+        throw err;
+    }
+};
+
+// Check for a duplicate email
+StoreSchema.statics.checkEmail = async function (email) {
+    try {
+        const Store = this; // db.model('Store')
+        const dupeEmail = await Store.findOne({ email: email, status: { $ne: status.deleted } });
+        if (dupeEmail) throw new Error('Invalid params: Email already in use');
+    } catch (err) {
+        throw err;
+    }
+};
+
+// Match password
+StoreSchema.methods.matchPassword = async function (password) {
+    try {
+        const store = this;
+        return bcrypt.compare(password, store.password);
     } catch (err) {
         throw err;
     }
