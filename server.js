@@ -14,11 +14,16 @@ const constants = require('./app/constants');
 const oAuthModel = require('./app/auth/authToken.model');
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3001;
 
-// app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '100mb' }));
+
+// Express only serves static assets in production
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('client/build'));
+}
+
 app.oauth = oAuth2Server({
     model: oAuthModel,
     grants: ['password'],
@@ -53,7 +58,7 @@ mongoDB.isReady()
         });
 
         app.listen(port, () => {
-            logger.debug(`we are live on ${port}`);
+            logger.debug(`Environment (${process.env.NODE_ENV}) live on ${port}`);
         });
     })
     .catch((err) => {

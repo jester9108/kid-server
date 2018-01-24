@@ -12,11 +12,11 @@ const dbPromise = new Promise((resolve, reject) => {
     const dbUri = `mongodb://${process.env.DB_USER}:${process.env.DB_PW}@${process.env.DB_HOST}`;
     db = mongoose.createConnection(dbUri, { useMongoClient: true });
     db.once('open', () => {
-        logger.debug('TokenDB connected');
+        logger.debug('DB connected');
         resolve(db);
     });
     db.on('error', (err) => {
-        logger.error('TokenDB connection failed');
+        logger.error('DB connection failed');
         reject(new Error(err.message));
     });
 });
