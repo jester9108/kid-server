@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
-import '../css/App.css';
-import Header from './Header.jsx';
+
+// import Header from './Header.jsx';
+import NavBarContainer from './navbar/NavBarContainer.jsx';
 import Main from './Main.jsx';
-import Modal from './modals/Modal.jsx';
+import ModalContainer from './modals/ModalContainer.jsx';
+import '../css/App.css';
 
 class App extends Component {
     render() {
         return (
             <div className="App">
-                <Header />
+                <NavBarContainer />
                 <Main />
-                <Modal />
+                <ModalContainer />
             </div>
         );
     }

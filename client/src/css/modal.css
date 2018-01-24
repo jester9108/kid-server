@@ -32,11 +32,20 @@
 }
 
 .modal-dialog {
+    background-color: white;
     position: relative;
-    outline: 0;
-    width: auto;
-    display: inline-block;
     vertical-align: middle;
+
+    /* position: absolute;
+    top: 20%;
+    left: 0;
+    right: 0;
+    margin: 0 auto; */
+
+    outline: 0;
+    width: 500px;
+    min-height: 400px;
+    display: inline-block;
     box-sizing: border-box;
     max-width: auto;
     cursor: default;

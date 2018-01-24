@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import '../css/navigation.css';
+import '../../css/navigation.css';
 
 
 class Navigation extends Component {
     static propTypes = {
-        match: PropTypes.object.isRequired,
+        // match: PropTypes.object.isRequired,
+        showLoginModal: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -16,15 +17,16 @@ class Navigation extends Component {
     }
 
     activate() {
-        const activeOption = this.props.match.path.substring(1);
-        const elem = document.getElementById(activeOption);
-        if (elem !== null) {
-            elem.classList.add('active');
-        }
-        this.setState({ scope: activeOption })
+        // const activeOption = this.props.match.path.substring(1);
+        // const elem = document.getElementById(activeOption);
+        // if (elem !== null) {
+        //     elem.classList.add('active');
+        // }
+        // this.setState({ scope: activeOption })
     }
 
     render() {
+        console.log(this.props);
         return (
             <header className="App-header">
                 <nav>
@@ -39,14 +41,14 @@ class Navigation extends Component {
                         <li><Link to='/schedule' id='schedule' onClick={this.activate}>Schedule</Link></li>
                         <li><Link to='/settings' id='settings' onClick={this.activate}>Settings</Link></li>
                         <li><Link to='/customerservice' id='customerservice' onClick={this.activate}>Customer Service</Link></li>
-                        <li id="registerBtn"><span>Register</span></li>
-                        <li id="loginBtn"><span onClick={this.props}>Log In</span></li>
-                        <li id="accountBtn">
+                        <li><span id='registerBtn' onClick={() => {}}>Register</span></li>
+                        <li><span id='loginBtn' onClick={this.props.showLoginModal}>Log In</span></li>
+                        <li id='accountBtn'>
                             <span>
                                 {this.state.storeName}&nbsp;
-                                <i className="fa fa-caret-down"></i>
+                                <i className='fa fa-caret-down'></i>
                             </span>
-                            <div id="dropdown">
+                            <div id='dropdown'>
                                 <ul>
                                     <li><span>Account Settings</span></li>
                                     <li><span>Log Out</span></li>

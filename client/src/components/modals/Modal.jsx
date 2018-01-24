@@ -1,40 +1,55 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import LoginModal from './LoginModal.jsx';
-
-// const Modal = props => {
-//     switch (props.currentModal) {
-//         case 'EXPORT_DATA':
-//             return <ExportDataModal {...props} />;
-
-//         case 'SOCIAL_SIGN_IN':
-//             return <LoginModal {...props} />;
-
-//         case 'FEEDBACK':
-//             return <FeedbackModal {...props} />;
-
-//         case 'EDIT_BOX':
-//             return <BoxDetailsModal {...props} />;
-
-//         default:
-//             return null;
-//     }
-// };
+import '../../css/modal.css';
 
 class Modal extends Component {
     static propTypes = {
-        currentModal: PropTypes.string,
+        children: PropTypes.oneOfType([
+            PropTypes.array,
+            PropTypes.element,
+            PropTypes.string,
+        ]).isRequired,
+        onClose: PropTypes.func,
     };
 
-    render() {
-        switch (this.props.currentModal) {
-            case 'LOGIN':
-                return <LoginModal {...this.props} />;
-
-            default:
-                return null;
+    listenKeyboard(event) {
+        if (event.key === 'Escape' || event.keyCode === 27) {
+            this.props.onClose();
         }
+    }
+
+    componentDidMount() {
+        if (this.props.onClose) {
+            window.addEventListener('keydown', this.listenKeyboard.bind(this), true);
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.props.onClose) {
+            window.removeEventListener('keydown', this.listenKeyboard.bind(this), true);
+        }
+    }
+
+    onOverlayClick() {
+        this.props.onClose();
+    }
+
+    onDialogClick(event) {
+        event.stopPropagation();
+    }
+
+    render() {
+        return (
+            <div>
+                <div className='modal-overlay' />
+                <div className='modal-content' onClick={this.onOverlayClick.bind(this)} >
+                    <div className='modal-dialog' onClick={this.onDialogClick}>
+                        {this.props.children}
+                    </div>
+                </div>
+            </div>
+        );
     }
 }
 
