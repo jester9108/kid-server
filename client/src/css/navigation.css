@@ -1,0 +1,63 @@
+nav {
+    height: inherit;
+}
+
+nav ul {
+    height: inherit;
+    padding: 0px;
+    margin: 0px;
+    text-align: right;
+    list-style-type: none;
+}
+
+nav ul li {
+    height: inherit;
+    display: inline-block;
+    line-height: 60px;
+}
+
+nav ul li> :first-child {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+    color: #666666;
+    text-decoration: none;
+}
+
+nav ul li:hover {
+    background-color: #DDDDDD;
+}
+
+#accountBtn{
+    font-weight: bold;
+}
+
+#accountBtn:hover #dropdown {
+    display: block;
+}
+
+#dropdown {
+    display: none;
+    position: absolute;
+    right: 20px;
+    background-color: #FFFFFF;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+#dropdown ul {
+    text-align: center;
+}
+
+#dropdown li {
+    padding-left: 20px;
+    padding-right: 20px;
+    display: block;
+}
+
+.active {
+    color: blue !important;
+}
