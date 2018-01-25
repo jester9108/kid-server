@@ -40,8 +40,8 @@ class Navigation extends Component {
                         <li><Link to='/schedule' id='schedule' onClick={this.activate}>Schedule</Link></li>
                         <li><Link to='/settings' id='settings' onClick={this.activate}>Settings</Link></li>
                         <li><Link to='/customerservice' id='customerservice' onClick={this.activate}>Customer Service</Link></li>
-                        <li><span id='registerBtn' onClick={() => {}}>Register</span></li>
-                        <li><span id='loginBtn' onClick={this.props.showLoginModal}>Log In</span></li>
+                        <li><span id='register' onClick={() => {}}>Register</span></li>
+                        <li><span id='login' onClick={this.props.showLoginModal}>Log In</span></li>
                         <li id='accountBtn'>
                             <span>
                                 {this.state.storeName}&nbsp;
