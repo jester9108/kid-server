@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import NavBarContainer from './navbar/NavBarContainer.jsx';
 import Main from './Main.jsx';
 import ModalContainer from './modals/ModalContainer.jsx';
-import '../css/App.css';
+import './App.css';
 
 class App extends Component {
     render() {

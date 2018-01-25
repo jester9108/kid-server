@@ -24,6 +24,7 @@ nav ul li> :first-child {
     text-align: center;
     color: #666666;
     text-decoration: none;
+    cursor: pointer;
 }
 
 nav ul li:hover {

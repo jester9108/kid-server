@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux'
 import kidApp from './redux/reducers';
 import App from './components/App.jsx';
-import './css/index.css';
+import './index.css';
 import registerServiceWorker from './registerServiceWorker';
 
 const store = createStore(kidApp);

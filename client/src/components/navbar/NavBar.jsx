@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import '../../css/navigation.css';
-
+import './navigation.css';
 
 class Navigation extends Component {
     static propTypes = {

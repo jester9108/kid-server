@@ -1,0 +1,82 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10000;
+    overflow: auto;
+    text-align: center;
+    padding: 4px;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, .65);
+}
+
+.modal-overlay:after {
+    vertical-align: middle;
+    display: inline-block;
+    height: 100%;
+    margin-left: -.05em;
+    content: '';
+}
+
+.modal-dialog {
+    display: inline-block;
+    width: 400px;
+    max-width: auto;
+    /* min-height: 400px; */
+    padding: 30px;
+    background-color: white;
+    outline: 0;
+    box-sizing: border-box;
+    border-radius: 4px;
+    cursor: default;
+    position: relative;
+    vertical-align: middle;
+    /* position: absolute;
+    top: 20%;
+    left: 0;
+    right: 0;
+    margin: 0 auto; */
+}
+
+#modal-close {
+    float: left;
+    font-size: 2em;
+    -webkit-text-stroke: .12em white;
+    cursor: pointer;
+}
+
+#modal-header {
+    font-size: 1.2em;
+    /* margin: 20px; */
+}
+
+#modal-subheader {
+    /* font-size: 1.2em; */
+    /* margin: 20px; */
+}
+
+#modal-description {
+    /* font-size: 1.2em; */
+    /* margin: 20px; */
+}
+
+#modal-submit {
+    display: inline-block;
+    /* margin: 10px; */
+    width: 50%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 1.2em;
+    border-radius: 5px;
+    background-color: rgb(35, 35, 100);
+    color: white;
+}
+
+.modal-children{
+    padding: 10px;
+}
+.row{
+    margin:20px;
+}

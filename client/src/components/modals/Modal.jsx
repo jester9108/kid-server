@@ -1,17 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import '../../css/modal.css';
+import './modal.css';
 
 class Modal extends Component {
     static propTypes = {
-        children: PropTypes.oneOfType([
-            PropTypes.array,
-            PropTypes.element,
-            PropTypes.string,
-        ]).isRequired,
-        onClose: PropTypes.func,
+        children: PropTypes.arrayOf(PropTypes.element).isRequired,
+        onClose: PropTypes.func.isRequired,
+        isForm: PropTypes.bool,
+        header: PropTypes.string.isRequired,
+        subheader: PropTypes.string,
+        description: PropTypes.string,
+        submitText: PropTypes.string.isRequired,
     };
+
+    constructor(props){
+        super(props);
+        this.onOverlayClick = this.onOverlayClick.bind(this);
+        this.listenKeyboard = this.listenKeyboard.bind(this);
+    }
 
     listenKeyboard(event) {
         if (event.key === 'Escape' || event.keyCode === 27) {
@@ -21,13 +28,13 @@ class Modal extends Component {
 
     componentDidMount() {
         if (this.props.onClose) {
-            window.addEventListener('keydown', this.listenKeyboard.bind(this), true);
+            window.addEventListener('keydown', this.listenKeyboard, true);
         }
     }
 
     componentWillUnmount() {
         if (this.props.onClose) {
-            window.removeEventListener('keydown', this.listenKeyboard.bind(this), true);
+            window.removeEventListener('keydown', this.listenKeyboard, true);
         }
     }
 
@@ -40,15 +47,28 @@ class Modal extends Component {
     }
 
     render() {
+        console.log(this.props) 
+        const ContentTag = this.props.isForm ? 'form' : 'div';
         return (
             <div>
-                <div className='modal-overlay' />
-                <div className='modal-content' onClick={this.onOverlayClick.bind(this)} >
+                <div className='modal-overlay' onClick={this.onOverlayClick} >
                     <div className='modal-dialog' onClick={this.onDialogClick}>
-                        {this.props.children}
+                        <span id='modal-close' className='fa fa-close' onClick={this.onOverlayClick}></span>
+                        <div id='modal-content'>
+                            <div id='modal-header' className='row'>{this.props.header}</div>
+                            <div id='modal-subheader' className='row'>{this.props.subheader}</div>
+                            <div id='modal-description' className='row'>{this.props.description}</div>
+                            <ContentTag className='modal-children'>
+                                {this.props.children}
+                                <input type='submit' id='submit' hidden />
+                            </ContentTag>
+                            <div id='modal-footer' className='row'>
+                                <label id='modal-submit' htmlFor='submit' tabIndex='0'>{this.props.submitText}</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </div >
         );
     }
 }
