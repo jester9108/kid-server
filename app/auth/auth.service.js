@@ -31,9 +31,9 @@ class AuthService {
         }
     }
 
-    async saveAuthToken(token, user) {
+    async saveAccessToken(accessToken, user) {
         try {
-            user.authToken = token;
+            user.accessToken = accessToken;
             return user.save();
         } catch (err) {
             throw err;

@@ -11,7 +11,7 @@ const oAuth2Server = require('node-oauth2-server');
 const mongoDB = require('./app/db');
 const logger = require('./app/utils').logger;
 const constants = require('./app/constants');
-const oAuthModel = require('./app/auth/authToken.model');
+const oAuthModel = require('./app/auth/accessToken.model');
 
 const app = express();
 const port = process.env.PORT || 3001;

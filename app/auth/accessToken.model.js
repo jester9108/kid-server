@@ -1,4 +1,4 @@
-// app/auth/authToken.model.js
+// app/auth/accessToken.model.js
 
 const authService = require('./auth.service');
 
@@ -77,15 +77,15 @@ const getUser = (email, password, callback) => {
 /**
  * saves the accessToken along with the userID retrieved from the given user
  *
- * @param token
+ * @param accessToken
  * @param clientID
  * @param expires
  * @param user
  * @param callback
  */
-const saveAccessToken = (token, clientID, expires, user, callback) => {
+const saveAccessToken = (accessToken, clientID, expires, user, callback) => {
     // save the accessToken along with the user.id
-    authService.saveAuthToken(token, user)
+    authService.saveAccessToken(accessToken, user)
         .then(() => callback(null))
         .catch(error => callback(error));
 };

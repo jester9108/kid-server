@@ -103,7 +103,11 @@ module.exports = (oAuth) => {
     });
 
     router.get('/me', (req, res) => {
-        res.json(req.user);
+        res.json({
+            success: true,
+            message: 'Store fetched',
+            data: req.user,
+        });
     });
 
     router.delete('/me', async (req, res, next) => {

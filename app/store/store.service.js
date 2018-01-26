@@ -9,79 +9,6 @@ const authMessage = require('../auth/auth.message');
 const constants = require('../constants');
 
 class StoreService {
-    /* async getUserCountsByAppId(appId) {
-        try {
-            const appUsers = await userService.getUsersByAppId(appId); // eslint-disable-line no-use-before-define
-            return {
-                success: true,
-                message: `App (#${appId} user counts fetched`,
-                data: {
-                    userCount: appUsers.length,
-                },
-            };
-        } catch (err) {
-            throw err;
-        }
-    } */
-
-    /* async issueToken(transaction) {
-        try {
-            const dev = await Store.findOne({ _id: transaction.devId });
-            // TODO: Check if app daily maximum is not reached
-            let numApps = dev.applications.length;
-            while (numApps) {
-                const app = dev.applications[numApps - 1];
-                if (app.id === transaction.appId) {
-                    app.totalTokensIssued += transaction.tokenAmt;
-                    break;
-                }
-                numApps -= 1;
-            }
-            await dev.save();
-        } catch (err) {
-            throw err;
-        }
-    } */
-
-    /* async integrateApplication(params) {
-        try {
-            const dev = await Store.findOne({ _id: params.devId });
-            const numApps = dev.applications.length;
-            dev.applications.push({
-                name: params.name,
-                platform: params.platform,
-                googleClientId: params.googleClientId,
-                facebookAppToken: params.facebookAppToken,
-                tokenIssueConds: params.tokenIssueConds,
-                dailyMaxIssue: params.dailyMaxIssue,
-            });
-            const apiKey = await new Promise((resolve, reject) => {
-                jwt.sign(
-                    {
-                        devId: params.devId,
-                        appId: dev.applications[numApps].id,
-                        googleClientId: params.googleClientId,
-                        facebookAppToken: params.facebookAppToken,
-                    },
-                    process.env.JWT_SECRET,
-                    (err, token) => {
-                        if (err) return reject(err);
-                        return resolve(token);
-                    }
-                );
-            });
-            dev.applications[numApps].apiKey = apiKey;
-            await dev.save();
-            return {
-                success: true,
-                message: `API key created for app '${params.name}'`,
-                data: { apiKey: apiKey },
-            };
-        } catch (err) {
-            throw err;
-        }
-    } */
-
     async register(storeData) {
         try {
             logger.debug('Creating new store...');
@@ -108,7 +35,7 @@ class StoreService {
 
     async getStoreFromBearerToken(bearerToken) {
         try {
-            const store = await Store.findOne({ authToken: bearerToken, status: { $ne: constants.status.deleted } });
+            const store = await Store.findOne({ accessToken: bearerToken, status: { $ne: constants.status.deleted } });
             return store;
         } catch (err) {
             throw err;
@@ -161,7 +88,7 @@ class StoreService {
     async deleteStore(store) {
         try {
             store.status = constants.status.deleted;
-            store.authToken = null;
+            store.accessToken = null;
             await store.save();
             return {
                 success: true,
