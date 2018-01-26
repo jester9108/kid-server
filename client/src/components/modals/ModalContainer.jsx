@@ -3,21 +3,22 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import LoginModal from './LoginModal.jsx';
-import { hideModal } from '../../redux/actions';
+import { hideModal, login } from '../../redux/actions';
 import { ModalTypes } from '../../config';
 
 class ModalContainer extends Component {
     static propTypes = {
         modalType: PropTypes.string,
         hideModal: PropTypes.func.isRequired,
+        isLoading: PropTypes.bool.isRequired,
+        loginState: PropTypes.object.isRequired,
+        login: PropTypes.func.isRequired,
     };
 
     render() {
-        console.log(this.props)
         switch (this.props.modalType) {
             case ModalTypes.LOGIN:
-                return <LoginModal hideModal={this.props.hideModal}/>;
-
+                return <LoginModal {...this.props} />;
             default:
                 return null;
         }
@@ -25,11 +26,18 @@ class ModalContainer extends Component {
 }
 
 const mapStateToProps = state => {
-    return { modalType: state.modalDisplay.modalType };
+    return {
+        modalType: state.modalType,
+        isLoading: state.isLoading,
+        loginState: state.loginState,
+    };
 }
 
 const mapDispatchToProps = dispatch => {
-    return { hideModal: () => dispatch(hideModal()) };
+    return {
+        hideModal: () => dispatch(hideModal()),
+        login: (email, password) => dispatch(login(email, password))
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalContainer);
