@@ -4,41 +4,54 @@ import PropTypes from 'prop-types';
 
 import NavBar from './NavBar.jsx';
 import { ModalTypes } from '../../config';
-import { showModal } from '../../redux/actions';
+import { logout, showModal, fetchUser } from '../../redux/actions';
 
 class NavBarContainer extends Component {
     static propTypes = {
-        currentPage: PropTypes.string,
-        currentStore: PropTypes.string,
+        location: PropTypes.object.isRequired,
+        logout: PropTypes.func.isRequired,
         showModal: PropTypes.func.isRequired,
+        loginState: PropTypes.object.isRequired,
+        fetchUser: PropTypes.func.isRequired,
+        user: PropTypes.object,
     };
 
     constructor(props) {
         super(props);
-        this.showLoginModal = this.showLoginModal.bind(this);
+        this.actions = {
+            showLoginModal: () => props.showModal(ModalTypes.LOGIN),
+            logout: () => props.logout(),
+        }
     }
 
-    showLoginModal() {
-        this.props.showModal(ModalTypes.LOGIN);
+    componentDidMount() {
+        this.componentDidUpdate({ loginState: {} });
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!prevProps.loginState.loggedIn && this.props.loginState.loggedIn) {
+            this.props.fetchUser();
+        }
     }
 
     render() {
-        console.log(this.props);
-        return <NavBar showLoginModal={this.showLoginModal} />;
+        return <NavBar path={this.props.location.pathname} user={this.props.user} {...this.actions} />;
     }
 }
 
-// const mapStateToProps = state => {
-//     console.log(state)
-//     return {
-//         currentPage: state.currentPage,
-//         currentStore: state.currentStore,
-//         showLoginModal: state.showLoginModal,
-//     };
-// }
-
-const mapDispatchToProps = dispatch => {
-    return { showModal: modalType => dispatch(showModal(modalType)) };
+const mapStateToProps = state => {
+    return {
+        loginState: state.loginState,
+        user: state.userData,
+    };
 }
 
-export default connect(/* mapStateToProps */null, mapDispatchToProps)(NavBarContainer);
+const mapDispatchToProps = dispatch => {
+    return {
+        logout: () => dispatch(logout()),
+        showModal: modalType => dispatch(showModal(modalType)),
+        fetchUser: () => dispatch(fetchUser()),
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavBarContainer);

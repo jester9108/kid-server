@@ -1,15 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux'
-import kidApp from './redux/reducers';
+import thunkMiddleware from 'redux-thunk';
+import logger from 'redux-logger';
+import 'promise-polyfill/src/polyfill';
+import 'whatwg-fetch';
+
+import rootReducer from './redux/reducers';
+import { loginSuccess } from './redux/actions';
 import App from './components/App.jsx';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
 
-const store = createStore(kidApp);
+/* Create Redux store */
+const store = createStore(
+    rootReducer,
+    applyMiddleware(thunkMiddleware, logger)
+);
 
+/* Load user session */
+const accessToken = localStorage.getItem('accessToken');
+if (accessToken) {
+    console.log('ACCESS TOKEN RECOVERED FROM LOCAL STORAGE');
+    store.dispatch(loginSuccess(accessToken));
+}
+
+/* Render */
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
