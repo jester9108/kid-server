@@ -4,6 +4,7 @@
     "private": true,
     "proxy": "http://localhost:3001/",
     "dependencies": {
+        "history": "^4.7.2",
         "promise-polyfill": "^7.0.2",
         "prop-types": "^15.6.0",
         "react": "^16.2.0",
