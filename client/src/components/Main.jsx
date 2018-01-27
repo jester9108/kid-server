@@ -19,8 +19,7 @@ class Main extends Component {
         if (this.props.loggedIn) {
             return this.props.children;
         } else {
-            console.log('MAIN ==> LOGIN')
-            console.log(this.props);
+            console.log('MAIN ==> LOGIN');
             return <Redirect to='/login' />;
         }
     }

@@ -13,6 +13,17 @@ class ModalWrapper extends Component {
         submitBtn: PropTypes.element,
         isLoading: PropTypes.bool,
         onClose: PropTypes.func.isRequired,
+        closeIcon: PropTypes.bool.isRequired,
+        closeOnEscape: PropTypes.bool.isRequired,
+        closeOnRootNodeClick: PropTypes.bool.isRequired,
+        dimmer: PropTypes.oneOf(PropTypes.string, PropTypes.bool),
+    };
+
+    static defaultProps = {
+        closeIcon: true,
+        closeOnEscape: true,
+        closeOnRootNodeClick: true,
+        dimmer: 'blurring',
     };
 
     render() {
@@ -22,7 +33,15 @@ class ModalWrapper extends Component {
             return null;
         } else {
             return (
-                <Modal size='tiny' open={true} dimmer='blurring' onClose={this.props.onClose} closeIcon>
+                <Modal
+                    size='tiny'
+                    open={true}
+                    dimmer={this.props.dimmer}
+                    onClose={this.props.onClose}
+                    closeIcon={this.props.closeIcon}
+                    closeOnEscape={this.props.closeOnEscape}
+                    closeOnRootNodeClick={this.props.closeOnRootNodeClick}
+                >
                     <Modal.Header id='modal-header'>{this.props.header}</Modal.Header>
                     <Modal.Content id='modal-content'>
                         <Grid>

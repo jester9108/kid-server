@@ -15,8 +15,6 @@ class LoginContainer extends Component {
     componentDidMount() {
         if (!this.props.loggedIn) {
             this.props.showLoginModal();
-        } else {
-
         }
     }
 
@@ -25,7 +23,7 @@ class LoginContainer extends Component {
             console.log('LOGIN ==> DASHBOARD');
             return <Redirect to='/dashboard' />;
         } else {
-            return <div>Login Page</div>;
+            return null;
         }
     }
 }

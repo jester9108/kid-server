@@ -26,6 +26,10 @@ class LoginModal extends Component {
             submitBtn: (
                 <Button as='label' fluid color='teal' content='Login' tabIndex='0' onClick={triggerSubmit} />
             ),
+            dimmer: false,
+            closeOnEscape: false,
+            closeOnRootNodeClick: false,
+            closeIcon: false,
         }
         this.state = { email: '', password: '' };
     }

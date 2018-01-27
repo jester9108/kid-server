@@ -8,7 +8,7 @@ class NavBar extends Component {
     static propTypes = {
         path: PropTypes.string.isRequired,
         logout: PropTypes.func.isRequired,
-        showLoginModal: PropTypes.func.isRequired,
+        // showLoginModal: PropTypes.func.isRequired,
         user: PropTypes.object,
     };
 
@@ -60,11 +60,12 @@ class NavBar extends Component {
                     </li>
                 </ul>
             ) : (
-                <ul>
-                    {logo}
-                    <li><span id='register' onClick={() => { }}>Register</span></li>
-                    <li><span id='login' onClick={this.props.showLoginModal}>Log In</span></li>
-                </ul>
+                <ul>{logo}</ul>
+                // <ul>
+                //     {logo}
+                //     <li><span id='register' onClick={() => { }}>Register</span></li>
+                //     <li><span id='login' onClick={this.props.showLoginModal}>Log In</span></li>
+                // </ul>
             );
 
         return <header className="App-header"><nav>{navMenu}</nav></header>;
