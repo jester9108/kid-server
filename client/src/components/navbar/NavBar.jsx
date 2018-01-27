@@ -41,11 +41,11 @@ class NavBar extends Component {
             ? (
                 <ul>
                     {logo}
-                    <li><Link to='/reception' id='reception' /* onClick={this.navigate} */>Reception</Link></li>
-                    <li><Link to='/dashboard' id='dashboard' /* onClick={this.navigate} */>Dashboard</Link></li>
-                    <li><Link to='/schedule' id='schedule' /* onClick={this.navigate} */>Schedule</Link></li>
-                    <li><Link to='/settings' id='settings' /* onClick={this.navigate} */>Settings</Link></li>
-                    <li><Link to='/customerservice' id='customerservice' /* onClick={this.navigate} */>Customer Service</Link></li>
+                    <li><Link to='/reception' id='reception' >Reception</Link></li>
+                    <li><Link to='/dashboard' id='dashboard' >Dashboard</Link></li>
+                    <li><Link to='/schedule' id='schedule' >Schedule</Link></li>
+                    <li><Link to='/settings' id='settings' >Settings</Link></li>
+                    <li><Link to='/customerservice' id='customerservice' >Customer Service</Link></li>
                     <li id='accountBtn'>
                         <span>
                             {this.props.user.settings.name}&nbsp;
