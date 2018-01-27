@@ -7,7 +7,6 @@ const constants = require('../constants');
 const authService = require('../auth/auth.service');
 const authMessage = require('../auth/auth.message');
 const User = require('./user.model').Model;
-const tokenService = require('../token/token.service');
 
 class UserService {
     async getUserFromSocialId(userData, apiPayload) {
