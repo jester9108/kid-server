@@ -43,7 +43,7 @@ module.exports = (oAuth) => {
 
     router.use('/', oAuth.authorise());
 
-    router.get('/me', (req, res, next) => {
+    router.get('/me', (req, res) => {
         res.json(req.user);
     });
 
@@ -66,6 +66,14 @@ module.exports = (oAuth) => {
                 throw error;
             }
             res.json(await userService.integrateSocialId(params));
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.get('/tokens', async (req, res, next) => {
+        try {
+            res.json(await userService.getTokenInfo(req.user));
         } catch (err) {
             next(err);
         }

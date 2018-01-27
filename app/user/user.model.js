@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema(
     {
         email: { type: String, unique: true, required: true },
         password: { type: String, required: true },
-        authToken: { type: String },
+        accessToken: { type: String },
         status: { type: String, enum: Object.values(status), default: status.pending },
         socialIds: {
             type: {
