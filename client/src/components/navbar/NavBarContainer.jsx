@@ -10,9 +10,9 @@ class NavBarContainer extends Component {
         location: PropTypes.object.isRequired,
         logout: PropTypes.func.isRequired,
         // showModal: PropTypes.func.isRequired,
-        loginState: PropTypes.object.isRequired,
         fetchUser: PropTypes.func.isRequired,
         user: PropTypes.object,
+        isLoggedIn: PropTypes.bool.isRequired,
     };
 
     constructor(props) {
@@ -24,11 +24,11 @@ class NavBarContainer extends Component {
     }
 
     componentDidMount() {
-        this.componentDidUpdate({ loginState: {} });
+        this.componentDidUpdate({ isLoggedIn: false });
     }
 
     componentDidUpdate(prevProps) {
-        if (!prevProps.loginState.loggedIn && this.props.loginState.loggedIn) {
+        if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
             this.props.fetchUser();
         }
     }
@@ -40,7 +40,7 @@ class NavBarContainer extends Component {
 
 const mapStateToProps = state => {
     return {
-        loginState: state.loginState,
+        isLoggedIn: state.isLoggedIn,
         user: state.userData,
     };
 }

@@ -41,11 +41,11 @@ class NavBar extends Component {
             ? (
                 <ul>
                     {logo}
-                    <li><Link to='/reception' id='reception' >Reception</Link></li>
-                    <li><Link to='/dashboard' id='dashboard' >Dashboard</Link></li>
-                    <li><Link to='/schedule' id='schedule' >Schedule</Link></li>
-                    <li><Link to='/settings' id='settings' >Settings</Link></li>
-                    <li><Link to='/customerservice' id='customerservice' >Customer Service</Link></li>
+                    <li><Link to='/reception' id='reception'>접수</Link></li>
+                    <li><Link to='/dashboard' id='dashboard'>대시보드</Link></li>
+                    <li><Link to='/schedule' id='schedule'>스케쥴</Link></li>
+                    <li><Link to='/settings' id='settings'>설정</Link></li>
+                    <li><Link to='/customerservice' id='customerservice'>고객지원</Link></li>
                     <li id='accountBtn'>
                         <span>
                             {this.props.user.settings.name}&nbsp;
@@ -60,7 +60,14 @@ class NavBar extends Component {
                     </li>
                 </ul>
             ) : (
-                <ul>{logo}</ul>
+                <ul>
+                    {logo}
+                    {
+                        (this.props.path === '/login')
+                            ? (<li><Link to='/register' id='register'>회원가입</Link></li>)
+                            : (<li><Link to='/login' id='login'>로그인</Link></li>)
+                    }
+                </ul>
                 // <ul>
                 //     {logo}
                 //     <li><span id='register' onClick={() => { }}>Register</span></li>

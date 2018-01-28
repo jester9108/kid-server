@@ -9,17 +9,19 @@ import { showModal } from '../../redux/actions';
 class LoginContainer extends Component {
     static propTypes = {
         showLoginModal: PropTypes.func.isRequired,
-        loggedIn: PropTypes.bool.isRequired,
+        isLoggedIn: PropTypes.bool.isRequired,
     };
 
     componentDidMount() {
-        if (!this.props.loggedIn) {
+        if (!this.props.isLoggedIn) {
+            console.log('DISPATCH SHOW LOGIN MODAL')
+            console.log(this.props.state);
             this.props.showLoginModal();
         }
     }
 
     render() {
-        if (this.props.loggedIn) {
+        if (this.props.isLoggedIn) {
             console.log('LOGIN ==> DASHBOARD');
             return <Redirect to='/dashboard' />;
         } else {
@@ -30,7 +32,8 @@ class LoginContainer extends Component {
 
 const mapStateToProps = state => {
     return {
-        loggedIn: state.loginState.loggedIn,
+        isLoggedIn: state.isLoggedIn,
+        state: state,
     };
 };
 

@@ -5,10 +5,10 @@ import * as ACTION from './actions'
 
 /* Modal reducer */
 const initialState = {
-    modalType: null,
     isLoading: false,
-    loginState: {
-        loggedIn: false,
+    isLoggedIn: false,
+    modalState: {
+        type: null,
         error: null,
     },
     userData: null,
@@ -18,35 +18,65 @@ const initialState = {
 function modalState(state = initialState, action) {
     switch (action.type) {
         case ACTION.SHOW_MODAL:
-            return Object.assign({}, state, { modalType: action.modalType });
+            // return Object.assign({}, state, {
+            //     modalState: Object.assign({}, state.modalState, { type: action.modalType }),
+            // });
+            return Object.assign({}, state, {
+                modalState: { type: action.modalType, error: null },
+            });
         case ACTION.HIDE_MODAL:
-            return Object.assign({}, state, { modalType: null });
+            return Object.assign({}, state, {
+                modalState: { type: null },
+            });
+        default:
+            return state;
+    }
+}
+
+/* Register reducer */
+function register(state = initialState, action) {
+    switch (action.type) {
+        case ACTION.REGISTER_REQUEST:
+            return Object.assign({}, state, { isLoading: true });
+        case ACTION.REGISTER_SUCCESS:
+            return Object.assign({}, state, {
+                isLoading: false,
+                modalState: Object.assign({}, state.modalState, { error: null }),
+            });
+        case ACTION.REGISTER_FAILURE:
+            return Object.assign({}, state, {
+                isLoading: false,
+                modalState: Object.assign({}, state.modalState, { error: action.error }),
+            });
         default:
             return state;
     }
 }
 
 /* Login reducer */
-function loginState(state = initialState, action) {
+function login(state = initialState, action) {
     switch (action.type) {
         case ACTION.LOGIN_REQUEST:
             return Object.assign({}, state, { isLoading: true });
         case ACTION.LOGIN_SUCCESS:
             return Object.assign({}, state, {
                 isLoading: false,
-                loginState: { loggedIn: true, error: null },
+                isLoggedIn: true,
+                modalState: Object.assign({}, state.modalState, { error: null }),
                 accessToken: action.accessToken,
             });
         case ACTION.LOGIN_FAILURE:
             return Object.assign({}, state, {
                 isLoading: false,
-                loginState: { loggedIn: false, error: action.error },
+                isLoggedIn: false,
+                modalState: Object.assign({}, state.modalState, { error: action.error }),
                 accessToken: null,
             });
         case ACTION.LOGOUT:
             return Object.assign({}, state, {
                 isLoading: false,
-                loginState: { loggedIn: false, error: null },
+                isLoggedIn: false,
+                modalState: Object.assign(state.modalState, { error: null }),
                 accessToken: null,
                 userData: null,
             });
@@ -77,15 +107,10 @@ function userState(state = initialState, action) {
     }
 }
 
-// const rootReducer = combineReducers({
-//     modalState,
-//     loginState,
-//     user,
-// })
-
 const rootReducer = reduceReducers(
     modalState,
-    loginState,
+    register,
+    login,
     userState,
 );
 

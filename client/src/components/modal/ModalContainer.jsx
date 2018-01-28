@@ -2,24 +2,30 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import LoginModal from './LoginModal.jsx';
-import { hideModal, login } from '../../redux/actions';
+import LoginModal from '../login/LoginModal.jsx';
+import RegisterModal from '../register/RegisterModal.jsx';
+import { hideModal, login, register } from '../../redux/actions';
 import { ModalTypes } from '../../config';
 
 class ModalContainer extends Component {
     static propTypes = {
-        modalType: PropTypes.string,
         hideModal: PropTypes.func.isRequired,
         isLoading: PropTypes.bool.isRequired,
-        loginState: PropTypes.object.isRequired,
+        isLoggedIn: PropTypes.bool.isRequired,
+        modalState: PropTypes.object.isRequired,
         login: PropTypes.func.isRequired,
+        register: PropTypes.func.isRequired,
     };
 
     render() {
-        switch (this.props.modalType) {
+        console.log('MODAL CONTAINER RENDERING...')
+        switch (this.props.modalState.type) {
             case ModalTypes.LOGIN:
                 return <LoginModal {...this.props} />;
+            case ModalTypes.REGISTER:
+                return <RegisterModal {...this.props} />;
             default:
+                console.log('* NO MODAL RENDERED')
                 return null;
         }
     }
@@ -27,16 +33,17 @@ class ModalContainer extends Component {
 
 const mapStateToProps = state => {
     return {
-        modalType: state.modalType,
         isLoading: state.isLoading,
-        loginState: state.loginState,
+        isLoggedIn: state.isLoggedIn,
+        modalState: state.modalState,
     };
 }
 
 const mapDispatchToProps = dispatch => {
     return {
         hideModal: () => dispatch(hideModal()),
-        login: (email, password) => dispatch(login(email, password))
+        login: (email, password) => dispatch(login(email, password)),
+        register: (storeData) => dispatch(register(storeData))
     };
 }
 

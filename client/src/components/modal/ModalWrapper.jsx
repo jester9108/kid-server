@@ -16,7 +16,7 @@ class ModalWrapper extends Component {
         closeIcon: PropTypes.bool.isRequired,
         closeOnEscape: PropTypes.bool.isRequired,
         closeOnRootNodeClick: PropTypes.bool.isRequired,
-        dimmer: PropTypes.oneOf(PropTypes.string, PropTypes.bool),
+        dimmer: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
     };
 
     static defaultProps = {

@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Grid, Form, Message } from 'semantic-ui-react'
 
-import ModalWrapper from './ModalWrapper.jsx';
+import ModalWrapper from '../modal/ModalWrapper.jsx';
 
 class LoginModal extends Component {
     static propTypes = {
         hideModal: PropTypes.func.isRequired,
         isLoading: PropTypes.bool.isRequired,
         login: PropTypes.func.isRequired,
-        loginState: PropTypes.object.isRequired,
+        modalState: PropTypes.object.isRequired,
+        isLoggedIn: PropTypes.bool.isRequired,
     };
 
     constructor(props) {
@@ -19,19 +20,25 @@ class LoginModal extends Component {
         const triggerSubmit = () => {
             document.getElementById('loginBtn').click();
         };
+        this.state = { email: '', password: '' };
+        
+        // constants
+        this.header = '로그인';
+        this.email = '이메일';
+        this.password = '비밀번호';
+
         this.options = {
-            header: 'Login',
+            header: this.header,
             // subheader: 'Please login',
             // message: 'We only support email login currently.',
             submitBtn: (
-                <Button as='label' fluid color='teal' content='Login' tabIndex='0' onClick={triggerSubmit} />
+                <Button as='label' fluid color='teal' content={this.header} tabIndex='0' onClick={triggerSubmit} />
             ),
             dimmer: false,
             closeOnEscape: false,
             closeOnRootNodeClick: false,
             closeIcon: false,
         }
-        this.state = { email: '', password: '' };
     }
 
     onChange(e, { id, value }) {
@@ -45,7 +52,7 @@ class LoginModal extends Component {
 
     render() {
         const { email, password } = this.state;
-        if (this.props.loginState.loggedIn) {
+        if (this.props.isLoggedIn) {
             return null;
         } else {
             return (
@@ -53,11 +60,11 @@ class LoginModal extends Component {
                     <Grid>
                         <Grid.Column width={3} />
                         <Grid.Column width={10}>
-                            <Form error={this.props.loginState.error !== null} onSubmit={this.login}>
-                                <Message error header='Login error' content={this.props.loginState.error} />
-                                <Form.Input label='Email' id='email' type='text' value={email} placeholder='Email' onChange={this.onChange} />
-                                <Form.Input label='Password' id='password' type='password' value={password} placeholder='Password' onChange={this.onChange} />
-                                <Form.Checkbox label='Remember me' id='remember' />
+                            <Form error={this.props.modalState.error !== null} onSubmit={this.login}>
+                                <Message error header='Login error' content={this.props.modalState.error} />
+                                <Form.Input label={this.email} id='email' type='text' value={email} placeholder={this.email} onChange={this.onChange} />
+                                <Form.Input label={this.password} id='password' type='password' value={password} placeholder={this.password} onChange={this.onChange} />
+                                {/* <Form.Checkbox label='Remember me' id='remember' /> */}
                                 <input id='loginBtn' type='submit' hidden />
                             </Form>
                         </Grid.Column>
@@ -74,7 +81,7 @@ class LoginModal extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (!prevProps.loginState.loggedIn && this.props.loginState.loggedIn) {
+        if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
             this.props.hideModal();
         }
     }

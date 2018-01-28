@@ -6,17 +6,11 @@ import { connect } from 'react-redux';
 class Main extends Component {
     static propTypes = {
         children: PropTypes.arrayOf(PropTypes.element).isRequired,
-        loggedIn: PropTypes.bool.isRequired,
+        isLoggedIn: PropTypes.bool.isRequired,
     };
 
-    // componentDidMount() {
-    //     if (!this.props.loggedIn) {
-
-    //     }
-    // }
-
     render() {
-        if (this.props.loggedIn) {
+        if (this.props.isLoggedIn) {
             return this.props.children;
         } else {
             console.log('MAIN ==> LOGIN');
@@ -40,7 +34,7 @@ class Main extends Component {
 
 const mapStateToProps = state => {
     return {
-        loggedIn: state.loginState.loggedIn,
+        isLoggedIn: state.isLoggedIn,
     };
 }
 
