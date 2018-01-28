@@ -60,6 +60,47 @@ export function login(email, password) {
     }
 }
 
+/* User register */
+export const REGISTER_REQUEST = 'REGISTER_REQUEST';
+export function registerRequest() {
+    return { type: REGISTER_REQUEST };
+}
+
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
+export function registerSuccess() {
+    return { type: REGISTER_SUCCESS };
+}
+
+export const REGISTER_FAILURE = 'REGISTER_FAILURE';
+export function registerFailure(error) {
+    return { type: REGISTER_FAILURE, error: error };
+}
+
+export function register(storeData) {
+    return function (dispatch) {
+        dispatch(registerRequest());
+        return fetch('/api/store/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: storeData.email,
+                password: storeData.password,
+                passwordConf: storeData.passwordConf,
+                adminName: storeData.adminName,
+                storeName: storeData.storeName,
+              }),
+        })
+            .then(response => response.json())
+            .then((response) => {
+                if (response.success) {
+                    dispatch(registerSuccess());
+                } else {
+                    dispatch(registerFailure(response.message));
+                }
+            });
+    }
+}
+
 /* User data */
 export const FETCH_USER_REQUEST = 'FETCH_USER_REQUEST';
 export function fetchUserRequest() {
