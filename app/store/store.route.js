@@ -16,8 +16,8 @@ module.exports = (oAuth) => {
                 email: req.body.email,
                 password: req.body.password,
                 passwordConf: req.body.passwordConf,
-                admin: { name: req.body.adminName },
                 settings: { name: req.body.storeName },
+                admin: { name: req.body.adminName },
             };
             const missingParams = Object.keys(params).filter(key => !params[key]);
             if (missingParams.length > 0) {

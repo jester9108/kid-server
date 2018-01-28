@@ -11,11 +11,6 @@ const amenities = constants.amenities;
 function checkArraySize(val) { return val.length <= 10; }
 function checkAge(val) { return val.max >= val.min; }
 
-const AdminSchema = new mongoose.Schema({
-    _id: false,
-    name: { type: String, required: true },
-    phone: { type: String, required: false },
-});
 const SettingsSchema = new mongoose.Schema({
     _id: false,
     name: { type: String, maxlength: 25, required: true },
@@ -70,6 +65,11 @@ const BankAccountSchema = new mongoose.Schema({
     bankName: { type: String, required: false },
     accountHolderName: { type: String, required: false },
 });
+const AdminSchema = new mongoose.Schema({
+    _id: false,
+    name: { type: String, required: true },
+    phone: { type: String, required: false },
+});
 
 const StoreSchema = new mongoose.Schema(
     {
@@ -77,7 +77,6 @@ const StoreSchema = new mongoose.Schema(
         password: { type: String, required: true },
         accessToken: { type: String, required: false },
         status: { type: String, enum: Object.values(status), default: status.pending },
-        admin: { type: AdminSchema, default: AdminSchema },
         settings: { type: SettingsSchema, default: SettingsSchema },
         menu: {
             type: [{
@@ -95,6 +94,7 @@ const StoreSchema = new mongoose.Schema(
         },
         products: { type: [ProductSchema], required: false },
         bankAccount: { type: BankAccountSchema, default: BankAccountSchema },
+        admin: { type: AdminSchema, default: AdminSchema },
     },
     {
         timestamps: {
@@ -106,11 +106,12 @@ const StoreSchema = new mongoose.Schema(
 
 // Hashing a password before saving it to the database
 StoreSchema.pre('save', async function (next) {
+    const Store = db.model('Store');
     const store = this;
     try {
         if (store.isNew) {
             store.email = store.email.trim();
-            await store.schema.statics.checkEmail(store.email);
+            await Store.checkEmail(store.email);
             const hash = await store.schema.statics.hashPassword(store.password, parseInt(process.env.SALT, 10));
             store.password = hash;
         }
