@@ -6,11 +6,11 @@ import Main from './Main.jsx';
 import LoginContainer from './login/LoginContainer.jsx';
 import RegisterContainer from './register/RegisterContainer.jsx';
 import AccountContainer from './account/AccountContainer.jsx';
-import Reception from './reception/Reception.jsx';
-import Dashboard from './dashboard/Dashboard.jsx';
-import Schedule from './schedule/Schedule.jsx';
-import Settings from './settings/Settings.jsx';
-import CustomerService from './customerservice/CustomerService.jsx';
+import ReceptionContainer from './reception/ReceptionContainer.jsx';
+import DashboardContainer from './dashboard/DashboardContainer.jsx';
+import ScheduleContainer from './schedule/ScheduleContainer.jsx';
+import SettingsContainer from './settings/SettingsContainer.jsx';
+import CustomerServiceContainer from './customerservice/CustomerServiceContainer.jsx';
 import ModalContainer from './modal/ModalContainer.jsx';
 import LoaderContainer from './loader/LoaderContainer.jsx';
 import './App.css';
@@ -26,11 +26,11 @@ class App extends Component {
                     <Main>
                         <Switch>
                             <Route path='/account' component={AccountContainer} />
-                            <Route path='/reception' component={Reception} />
-                            <Route path='/dashboard' component={Dashboard} />
-                            <Route path='/schedule' component={Schedule} />
-                            <Route path='/settings' component={Settings} />
-                            <Route path='/customerservice' component={CustomerService} />
+                            <Route path='/reception' component={ReceptionContainer} />
+                            <Route path='/dashboard' component={DashboardContainer} />
+                            <Route path='/schedule' component={ScheduleContainer} />
+                            <Route path='/settings' component={SettingsContainer} />
+                            <Route path='/customerservice' component={CustomerServiceContainer} />
                             <Route render={(props) => (
                                 <div style={{ 'textAlign': ' center' }}>
                                     <header className="App-header" style={{ 'backgroundColor': '#222', height: '150px', padding: '20px' }}>

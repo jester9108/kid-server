@@ -67,21 +67,22 @@ class DeleteAccountModal extends Component {
         const { password } = this.state;
         console.log('DELETE ACCOUNT MODAL RENDERING')
         if (this.props.modalState.isReauthed) {
-            // return null;
-            return (
-                    <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
-                        <Form loading={false} error={this.props.modalState.error !== null} onSubmit={() => { }}>
-                            <Grid>
-                                <Grid.Column width={3} />
-                                <Grid.Column width={10}>
-                                    GOOD JOB
-                                <input id={this.submitBtnId} type='submit' hidden />
-                                </Grid.Column>
-                                <Grid.Column width={3} />
-                            </Grid>
-                        </Form>
-                    </ModalWrapper>
-            );
+            // TODO: Fix weird Semantic-UI error
+            return null;
+            // return (
+            //         <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
+            //             <Form loading={false} error={this.props.modalState.error !== null} onSubmit={() => { }}>
+            //                 <Grid>
+            //                     <Grid.Column width={3} />
+            //                     <Grid.Column width={10}>
+            //                         GOOD JOB
+            //                     <input id={this.submitBtnId} type='submit' hidden />
+            //                     </Grid.Column>
+            //                     <Grid.Column width={3} />
+            //                 </Grid>
+            //             </Form>
+            //         </ModalWrapper>
+            // );
         } else {
             return (
                 <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
