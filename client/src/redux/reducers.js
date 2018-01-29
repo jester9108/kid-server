@@ -2,9 +2,11 @@
 import reduceReducers from 'reduce-reducers';
 
 import * as ACTION from './actions'
+import { PageTypes} from '../config';
 
-/* Modal reducer */
+/* Initial state */
 const initialState = {
+    activePage: PageTypes.HOME,
     isLoading: false,
     isSaving: false,
     isLoggedIn: false,
@@ -16,12 +18,21 @@ const initialState = {
     error: null,
     accessToken: null,
 };
+
+/* Navigate reducer */
+function navigation(state = initialState, action) {
+    switch (action.type) {
+        case ACTION.NAVIGATE:
+            return Object.assign({}, state, { activePage: action.target });
+        default:
+            return state;
+    }
+}
+
+/* Modal reducer */
 function modalState(state = initialState, action) {
     switch (action.type) {
         case ACTION.SHOW_MODAL:
-            // return Object.assign({}, state, {
-            //     modalState: Object.assign({}, state.modalState, { type: action.modalType }),
-            // });
             return Object.assign({}, state, {
                 modalState: { type: action.modalType, error: null },
             });
@@ -121,6 +132,7 @@ function save(state = initialState, action) {
 }
 
 const rootReducer = reduceReducers(
+    navigation,
     modalState,
     register,
     login,

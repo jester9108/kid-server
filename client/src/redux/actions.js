@@ -1,3 +1,9 @@
+/* Navigation */
+export const NAVIGATE = 'NAVIGATE';
+export function navigate(target) {
+    return { type: NAVIGATE, target: target }
+}
+
 /* Modal */
 export const SHOW_MODAL = 'SHOW_MODAL';
 export function showModal(modalType) {
