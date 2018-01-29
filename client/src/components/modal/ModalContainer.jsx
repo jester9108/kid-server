@@ -7,7 +7,7 @@ import RegisterModal from '../register/RegisterModal.jsx';
 import ChangeEmailModal from '../account/ChangeEmailModal.jsx';
 import ChangePasswordModal from '../account/ChangePasswordModal.jsx';
 import DeleteAccountModal from '../account/DeleteAccountModal.jsx';
-import { hideModal, login, register, reauth } from '../../redux/actions';
+import { hideModal, login, register, reauth, deleteAccount } from '../../redux/actions';
 import { ModalTypes } from '../../config';
 
 class ModalContainer extends Component {
@@ -19,6 +19,7 @@ class ModalContainer extends Component {
         login: PropTypes.func.isRequired,
         register: PropTypes.func.isRequired,
         reauth: PropTypes.func.isRequired,
+        deleteAccount: PropTypes.func.isRequired,
     };
 
     render() {
@@ -53,6 +54,7 @@ const mapDispatchToProps = dispatch => {
         login: (email, password) => dispatch(login(email, password)),
         register: (storeData) => dispatch(register(storeData)),
         reauth: (password) => dispatch(reauth(password)),
+        deleteAccount: () => dispatch(deleteAccount()),
     };
 }
 

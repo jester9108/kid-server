@@ -57,31 +57,33 @@ class RegisterModal extends Component {
         this.setState({ password: '', passwordConf: '' });
     }
 
+    componentDidUpdate(prevProps) {
+        if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
+            this.props.hideModal();
+        }
+    }
+
     render() {
         const { email, password, passwordConf, storeName, adminName } = this.state;
-        // if (this.props.isLoggedIn) {
-        //     return null;
-        // } else {
-            return (
-                <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
-                    <Form error={this.props.modalState.error !== null} onSubmit={this.register}>
-                        <Grid>
-                            <Grid.Column width={3} />
-                            <Grid.Column width={10}>
-                                <Message error header='오류' content={this.props.modalState.error} />
-                                <Form.Input label={this.email} id='email' type='text' value={email} placeholder={this.email} onChange={this.onChange} />
-                                <Form.Input label={this.password} id='password' type='password' value={password} placeholder={this.password} onChange={this.onChange} />
-                                <Form.Input label={this.passwordConf} id='passwordConf' type='password' value={passwordConf} placeholder={this.passwordConf} onChange={this.onChange} />
-                                <Form.Input label={this.storeName} id='storeName' type='text' value={storeName} placeholder={this.storeName} onChange={this.onChange} />
-                                <Form.Input label={this.adminName} id='adminName' type='text' value={adminName} placeholder={this.adminName} onChange={this.onChange} />
-                                <input id={this.submitBtnId} type='submit' hidden />
-                            </Grid.Column>
-                            <Grid.Column width={3} />
-                        </Grid>
-                    </Form>
-                </ModalWrapper>
-            );
-        // }
+        return (
+            <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
+                <Form error={this.props.modalState.error !== null} onSubmit={this.register}>
+                    <Grid>
+                        <Grid.Column width={3} />
+                        <Grid.Column width={10}>
+                            <Message error header='오류' content={this.props.modalState.error} />
+                            <Form.Input label={this.email} id='email' type='text' value={email} placeholder={this.email} onChange={this.onChange} />
+                            <Form.Input label={this.password} id='password' type='password' value={password} placeholder={this.password} onChange={this.onChange} />
+                            <Form.Input label={this.passwordConf} id='passwordConf' type='password' value={passwordConf} placeholder={this.passwordConf} onChange={this.onChange} />
+                            <Form.Input label={this.storeName} id='storeName' type='text' value={storeName} placeholder={this.storeName} onChange={this.onChange} />
+                            <Form.Input label={this.adminName} id='adminName' type='text' value={adminName} placeholder={this.adminName} onChange={this.onChange} />
+                            <input id={this.submitBtnId} type='submit' hidden />
+                        </Grid.Column>
+                        <Grid.Column width={3} />
+                    </Grid>
+                </Form>
+            </ModalWrapper>
+        );
     }
 }
 
