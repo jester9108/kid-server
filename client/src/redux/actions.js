@@ -2,19 +2,25 @@ import { DataTypes } from '../config';
 
 const storeAPI = '/api/store';
 
+
 /* Navigation */
+
 export const NAVIGATE = 'NAVIGATE';
 export function navigate(target) {
     return { type: NAVIGATE, target: target }
 }
 
+
 /* Server request */
+
 export const API_REQUEST = 'API_REQUEST';
 export function apiRequest() {
     return { type: API_REQUEST };
 }
 
+
 /* Modal display */
+
 export const SHOW_MODAL = 'SHOW_MODAL';
 export function showModal(modalType) {
     return { type: SHOW_MODAL, modalType: modalType };
@@ -25,11 +31,13 @@ export function hideModal() {
     return { type: HIDE_MODAL };
 }
 
+
 /* User registration */
-// export const REGISTER_REQUEST = 'REGISTER_REQUEST';
-// export function registerRequest() {
-//     return { type: REGISTER_REQUEST };
-// }
+
+export const REGISTER_REQUEST = 'REGISTER_REQUEST';
+export function registerRequest() {
+    return { type: REGISTER_REQUEST };
+}
 
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export function registerSuccess() {
@@ -45,7 +53,7 @@ export function register(storeData) {
     return function (dispatch) {
 
         // Notify server request
-        dispatch(apiRequest());
+        dispatch(registerRequest());
 
         // Make request
         return fetch(`${storeAPI}/register`, {
@@ -71,11 +79,13 @@ export function register(storeData) {
     }
 }
 
+
 /* User login/logout */
-// export const LOGIN_REQUEST = 'LOGIN_REQUEST';
-// export function loginRequest() {
-//     return { type: LOGIN_REQUEST };
-// }
+
+export const LOGIN_REQUEST = 'LOGIN_REQUEST';
+export function loginRequest() {
+    return { type: LOGIN_REQUEST };
+}
 
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export function loginSuccess(accessToken) {
@@ -87,19 +97,11 @@ export function loginFailure(error) {
     return { type: LOGIN_FAILURE, error: error };
 }
 
-export const LOGOUT = 'LOGOUT';
-export function logout() {
-    return function (dispatch) {
-        dispatch({ type: LOGOUT });
-        localStorage.removeItem('accessToken');
-    };
-}
-
 export function login(email, password) {
     return function (dispatch) {
 
         // Notify server request
-        dispatch(apiRequest());
+        dispatch(loginRequest());
 
         // Prepare payload
         const formBody = new URLSearchParams({
@@ -128,11 +130,21 @@ export function login(email, password) {
     }
 }
 
+export const LOGOUT = 'LOGOUT';
+export function logout() {
+    return function (dispatch) {
+        dispatch({ type: LOGOUT });
+        localStorage.removeItem('accessToken');
+    };
+}
+
+
 /* User data */
-// export const FETCH_USER_REQUEST = 'FETCH_USER_REQUEST';
-// export function fetchUserRequest() {
-//     return { type: FETCH_USER_REQUEST };
-// }
+
+export const FETCH_USER_REQUEST = 'FETCH_USER_REQUEST';
+export function fetchUserRequest() {
+    return { type: FETCH_USER_REQUEST };
+}
 
 export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
 export function fetchUserSuccess(userData) {
@@ -146,9 +158,9 @@ export function fetchUserFailure(error) {
 
 export function fetchUser() {
     return function (dispatch, getState) {
-        
+
         // Notify server request
-        dispatch(apiRequest());
+        dispatch(fetchUserRequest());
 
         // Get access token
         const { accessToken } = getState();
@@ -170,7 +182,14 @@ export function fetchUser() {
     }
 }
 
+
 /* Reauthentication */
+
+export const REAUTH_REQUEST = 'REAUTH_REQUEST';
+export function reauthRequest() {
+    return { type: REAUTH_REQUEST };
+}
+
 export const REAUTH_SUCCESS = 'REAUTH_SUCCESS';
 export function reauthSuccess() {
     return { type: REAUTH_SUCCESS };
@@ -185,7 +204,7 @@ export function reauth(password) {
     return function (dispatch, getState) {
 
         // Notify server request
-        dispatch(apiRequest());
+        dispatch(reauthRequest());
 
         // Get access token
         const { accessToken } = getState();
@@ -210,6 +229,9 @@ export function reauth(password) {
             });
     }
 }
+
+
+/* Save data */
 
 export const SAVE_REQUIRED = 'SAVE_REQUIRED';
 export function requireSave() {
@@ -258,5 +280,55 @@ export function save(newUserData, dataType) {
                     dispatch(saveFailure(response.message));
                 }
             });
+    }
+}
+
+
+/* Delete account */
+
+export const DELETE_ACC_REQUEST = 'DELETE_ACC_REQUEST';
+export function deleteAccRequest() {
+    return { type: DELETE_ACC_REQUEST };
+}
+
+export const DELETE_ACC_SUCCESS = 'DELETE_ACC_SUCCESS';
+export function deleteAccSuccess() {
+    return { type: DELETE_ACC_SUCCESS };
+}
+
+export const DELETE_ACC_FAILURE = 'DELETE_ACC_FAILURE';
+export function deleteAccFailure(error) {
+    return { type: DELETE_ACC_FAILURE, error: error };
+}
+
+export function deleteAccount() {
+    return function (dispatch, getState) {
+
+        // Notify server request
+        dispatch(deleteAccRequest());
+
+        console.log('DELETE ACCOUNT ACTION NOTIFIED')
+        // // Get access token
+        // const { accessToken } = getState();
+        // if (!accessToken) return null;
+
+        // // Make request
+        // return fetch(`${storeAPI}/me`, {
+        //     method: 'DELETE',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${accessToken}`
+        //     },
+        // })
+        //     .then(response => response.json())
+        //     .then((response) => {
+        //         if (response.success) {
+        //             console.log('--ACCOUNT DELETED FROM SERVER--')
+        //             // dispatch(logout());
+        //             // dispatch(deleteAccSuccess());
+        //         } else {
+        //             dispatch(deleteAccFailure(response.message));
+        //         }
+        //     });
     }
 }

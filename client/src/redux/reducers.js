@@ -4,7 +4,9 @@ import reduceReducers from 'reduce-reducers';
 import * as ACTION from './actions'
 import { PageTypes } from '../config';
 
+
 /* Initial state */
+
 const initialState = {
     activePage: PageTypes.HOME,
     isLoading: false,
@@ -20,7 +22,9 @@ const initialState = {
     accessToken: null,
 };
 
+
 /* Navigate reducer */
+
 function navigation(state = initialState, action) {
     switch (action.type) {
         case ACTION.NAVIGATE:
@@ -30,17 +34,9 @@ function navigation(state = initialState, action) {
     }
 }
 
-/* Request reducer */
-function serverRequest(state = initialState, action) {
-    switch (action.type) {
-        case ACTION.API_REQUEST:
-            return Object.assign({}, state, { isLoading: true });
-        default:
-            return state;
-    }
-}
 
 /* Modal reducer */
+
 function modalState(state = initialState, action) {
     switch (action.type) {
         case ACTION.SHOW_MODAL:
@@ -51,6 +47,8 @@ function modalState(state = initialState, action) {
                     error: null,
                 },
             });
+        case ACTION.REAUTH_REQUEST:
+            return Object.assign({}, state, { isLoading: true });
         case ACTION.REAUTH_SUCCESS:
             return Object.assign({}, state, {
                 isLoading: false,
@@ -59,8 +57,8 @@ function modalState(state = initialState, action) {
         case ACTION.REAUTH_FAILURE:
             return Object.assign({}, state, {
                 isLoading: false,
-                modalState: Object.assign({}, state.modalState, { 
-                    isReauthed: false, 
+                modalState: Object.assign({}, state.modalState, {
+                    isReauthed: false,
                     error: action.error,
                 }),
             });
@@ -73,11 +71,13 @@ function modalState(state = initialState, action) {
     }
 }
 
+
 /* Register reducer */
+
 function register(state = initialState, action) {
     switch (action.type) {
-        // case ACTION.REGISTER_REQUEST:
-        //     return Object.assign({}, state, { isLoading: true });
+        case ACTION.REGISTER_REQUEST:
+            return Object.assign({}, state, { isLoading: true });
         case ACTION.REGISTER_SUCCESS:
             return Object.assign({}, state, {
                 isLoading: false,
@@ -93,11 +93,13 @@ function register(state = initialState, action) {
     }
 }
 
-/* Login reducer */
+
+/* Login/login reducer */
+
 function login(state = initialState, action) {
     switch (action.type) {
-        // case ACTION.LOGIN_REQUEST:
-        //     return Object.assign({}, state, { isLoading: true });
+        case ACTION.LOGIN_REQUEST:
+            return Object.assign({}, state, { isLoading: true });
         case ACTION.LOGIN_SUCCESS:
             return Object.assign({}, state, {
                 isLoading: false,
@@ -125,11 +127,13 @@ function login(state = initialState, action) {
     }
 }
 
+
 /* User reducer */
+
 function userState(state = initialState, action) {
     switch (action.type) {
-        // case ACTION.FETCH_USER_REQUEST:
-        //     return Object.assign({}, state, { isLoading: true });
+        case ACTION.FETCH_USER_REQUEST:
+            return Object.assign({}, state, { isLoading: true });
         case ACTION.FETCH_USER_SUCCESS:
             return Object.assign({}, state, {
                 isLoading: false,
@@ -147,7 +151,9 @@ function userState(state = initialState, action) {
     }
 }
 
+
 /* Save reducer */
+
 function save(state = initialState, action) {
     switch (action.type) {
         case ACTION.SAVE_REQUIRED:
@@ -162,14 +168,36 @@ function save(state = initialState, action) {
     }
 }
 
+
+/* Delete account reducer */
+
+function deleteAccount(state = initialState, action) {
+    switch (action.type) {
+        case ACTION.DELETE_ACC_REQUEST:
+            return Object.assign({}, state, { isLoading: true });
+        case ACTION.DELETE_ACC_SUCCESS:
+            return Object.assign({}, state, {
+                isLoading: false,
+                modalState: Object.assign({}, state.modalState, { error: null }),
+            });
+        case ACTION.DELETE_ACC_FAILURE:
+            return Object.assign({}, state, {
+                isLoading: false,
+                modalState: Object.assign({}, state.modalState, { error: action.error }),
+            });
+        default:
+            return state;
+    }
+}
+
 const rootReducer = reduceReducers(
     navigation,
-    serverRequest,
     modalState,
     register,
     login,
     userState,
     save,
+    deleteAccount,
 );
 
 export default rootReducer;

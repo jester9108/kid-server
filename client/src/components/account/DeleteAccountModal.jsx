@@ -7,6 +7,7 @@ import ModalWrapper from '../modal/ModalWrapper.jsx';
 class DeleteAccountModal extends Component {
     static propTypes = {
         hideModal: PropTypes.func.isRequired,
+        deleteAccount: PropTypes.func.isRequired,
         isLoading: PropTypes.bool.isRequired,
         isLoggedIn: PropTypes.bool.isRequired,
         reauth: PropTypes.func.isRequired,
@@ -57,26 +58,29 @@ class DeleteAccountModal extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
-            this.props.hideModal();
+        if (!prevProps.modalState.isReauthed && this.props.modalState.isReauthed) {
+            // this.props.deleteAccount();
         }
     }
 
     render() {
         const { password } = this.state;
+        console.log('DELETE ACCOUNT MODAL RENDERING')
         if (this.props.modalState.isReauthed) {
+            // return null;
             return (
-                <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
-                    <Form loading={false} error={this.props.modalState.error !== null} onSubmit={this.reauth}>
-                        <Grid>
-                            <Grid.Column width={3} />
-                            <Grid.Column width={10}>
-                            GOOD JOB
-                            </Grid.Column>
-                            <Grid.Column width={3} />
-                        </Grid>
-                    </Form>
-                </ModalWrapper>
+                    <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
+                        <Form loading={false} error={this.props.modalState.error !== null} onSubmit={() => { }}>
+                            <Grid>
+                                <Grid.Column width={3} />
+                                <Grid.Column width={10}>
+                                    GOOD JOB
+                                <input id={this.submitBtnId} type='submit' hidden />
+                                </Grid.Column>
+                                <Grid.Column width={3} />
+                            </Grid>
+                        </Form>
+                    </ModalWrapper>
             );
         } else {
             return (
