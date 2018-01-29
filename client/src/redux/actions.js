@@ -1,3 +1,7 @@
+import { DataTypes } from '../config';
+
+const storeAPI = '/api/store';
+
 /* Navigation */
 export const NAVIGATE = 'NAVIGATE';
 export function navigate(target) {
@@ -49,7 +53,7 @@ export function login(email, password) {
             client_id: null,
             client_secret: null,
         });
-        return fetch('/api/store/login', {
+        return fetch(`${storeAPI}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
             body: formBody,
@@ -85,7 +89,7 @@ export function registerFailure(error) {
 export function register(storeData) {
     return function (dispatch) {
         dispatch(registerRequest());
-        return fetch('/api/store/register', {
+        return fetch(`${storeAPI}/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -129,7 +133,7 @@ export function fetchUser() {
         dispatch(fetchUserRequest());
         const { accessToken } = getState();
         if (!accessToken) return null;
-        return fetch('/api/store/me', {
+        return fetch(`${storeAPI}/me`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${accessToken}` },
         })
@@ -150,12 +154,43 @@ export function requireSave() {
 }
 
 export const SAVE_SUCCESS = 'SAVE_SUCCESS';
-export function saveSuccess() {
-    return { type: SAVE_SUCCESS };
+export function saveSuccess(newUserData) {
+    return { type: SAVE_SUCCESS, newUserData: newUserData };
 }
 
-export function saveChanges(userData) {
-    return function (dispatch) {
-        dispatch(saveSuccess());
+export const SAVE_FAILURE = 'SAVE_FAILURE';
+export function saveFailure(error) {
+    return { type: SAVE_FAILURE, error: error };
+}
+
+export function save(newUserData, dataType) {
+    return function (dispatch, getState) {
+        let endpoint;
+        let payload;
+        if (dataType === DataTypes.ADMIN) {
+            endpoint = '/admin';
+            payload = newUserData.admin;
+        }
+
+        // Make request
+        const { accessToken } = getState();
+        if (!accessToken) return null;
+        console.log({ admin: payload })
+        return fetch(`${storeAPI}/me${endpoint}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ admin: payload }),
+        })
+            .then(response => response.json())
+            .then((response) => {
+                if (response.success) {
+                    dispatch(saveSuccess(newUserData));
+                } else {
+                    dispatch(saveFailure(response.message));
+                }
+            });
     }
 }

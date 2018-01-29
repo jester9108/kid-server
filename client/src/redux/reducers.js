@@ -125,7 +125,10 @@ function save(state = initialState, action) {
         case ACTION.SAVE_REQUIRED:
             return Object.assign({}, state, { isSaving: true });
         case ACTION.SAVE_SUCCESS:
-            return Object.assign({}, state, { isSaving: false });
+            return Object.assign({}, state, { 
+                isSaving: false,
+                userData: action.newUserData,
+            });
         default:
             return state;
     }
