@@ -8,9 +8,9 @@ class LoginModal extends Component {
     static propTypes = {
         hideModal: PropTypes.func.isRequired,
         isLoading: PropTypes.bool.isRequired,
+        isLoggedIn: PropTypes.bool.isRequired,
         login: PropTypes.func.isRequired,
         modalState: PropTypes.object.isRequired,
-        isLoggedIn: PropTypes.bool.isRequired,
     };
 
     constructor(props) {
@@ -21,7 +21,7 @@ class LoginModal extends Component {
             document.getElementById('loginBtn').click();
         };
         this.state = { email: '', password: '' };
-        
+
         // constants
         this.header = '로그인';
         this.email = '이메일';
@@ -57,19 +57,19 @@ class LoginModal extends Component {
         } else {
             return (
                 <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
-                    <Grid>
-                        <Grid.Column width={3} />
-                        <Grid.Column width={10}>
-                            <Form error={this.props.modalState.error !== null} onSubmit={this.login}>
-                                <Message error header='Login error' content={this.props.modalState.error} />
+                    <Form error={this.props.modalState.error !== null} onSubmit={this.login}>
+                        <Grid>
+                            <Grid.Column width={3} />
+                            <Grid.Column width={10}>
+                                <Message error header='오류' content={this.props.modalState.error} />
                                 <Form.Input label={this.email} id='email' type='text' value={email} placeholder={this.email} onChange={this.onChange} />
                                 <Form.Input label={this.password} id='password' type='password' value={password} placeholder={this.password} onChange={this.onChange} />
                                 {/* <Form.Checkbox label='Remember me' id='remember' /> */}
                                 <input id='loginBtn' type='submit' hidden />
-                            </Form>
-                        </Grid.Column>
-                        <Grid.Column width={3} />
-                    </Grid>
+                            </Grid.Column>
+                            <Grid.Column width={3} />
+                        </Grid>
+                    </Form>
                 </ModalWrapper>
             );
         }

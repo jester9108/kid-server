@@ -14,8 +14,6 @@ class LoginContainer extends Component {
 
     componentDidMount() {
         if (!this.props.isLoggedIn) {
-            console.log('DISPATCH SHOW LOGIN MODAL')
-            console.log(this.props.state);
             this.props.showLoginModal();
         }
     }
@@ -33,7 +31,6 @@ class LoginContainer extends Component {
 const mapStateToProps = state => {
     return {
         isLoggedIn: state.isLoggedIn,
-        state: state,
     };
 };
 

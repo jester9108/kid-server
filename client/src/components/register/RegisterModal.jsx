@@ -60,34 +60,23 @@ class RegisterModal extends Component {
         } else {
             return (
                 <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
-                    <Grid>
-                        <Grid.Column width={3} />
-                        <Grid.Column width={10}>
-                            <Form error={this.props.modalState.error !== null} onSubmit={this.register}>
-                                <Message error header='Login error' content={this.props.modalState.error} />
+                    <Form error={this.props.modalState.error !== null} onSubmit={this.register}>
+                        <Grid>
+                            <Grid.Column width={3} />
+                            <Grid.Column width={10}>
+                                <Message error header='오류' content={this.props.modalState.error} />
                                 <Form.Input label={this.email} id='email' type='text' value={email} placeholder={this.email} onChange={this.onChange} />
                                 <Form.Input label={this.password} id='password' type='password' value={password} placeholder={this.password} onChange={this.onChange} />
                                 <Form.Input label={this.passwordConf} id='passwordConf' type='password' value={passwordConf} placeholder={this.passwordConf} onChange={this.onChange} />
                                 <Form.Input label={this.storeName} id='storeName' type='text' value={storeName} placeholder={this.storeName} onChange={this.onChange} />
                                 <Form.Input label={this.adminName} id='adminName' type='text' value={adminName} placeholder={this.adminName} onChange={this.onChange} />
                                 <input id='registerBtn' type='submit' hidden />
-                            </Form>
-                        </Grid.Column>
-                        <Grid.Column width={3} />
-                    </Grid>
+                            </Grid.Column>
+                            <Grid.Column width={3} />
+                        </Grid>
+                    </Form>
                 </ModalWrapper>
             );
-        }
-    }
-
-    componentDidMount() {
-        // Cannot attach ref callback to stateless component function
-        // document.getElementById('email').focus(); 
-    }
-
-    componentDidUpdate(prevProps) {
-        if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
-            this.props.hideModal();
         }
     }
 }

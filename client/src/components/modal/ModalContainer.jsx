@@ -18,14 +18,12 @@ class ModalContainer extends Component {
     };
 
     render() {
-        console.log('MODAL CONTAINER RENDERING...')
         switch (this.props.modalState.type) {
             case ModalTypes.LOGIN:
                 return <LoginModal {...this.props} />;
             case ModalTypes.REGISTER:
                 return <RegisterModal {...this.props} />;
             default:
-                console.log('* NO MODAL RENDERED')
                 return null;
         }
     }
