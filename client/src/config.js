@@ -11,12 +11,22 @@ export const PageTypes = {
     CUSTOMERSERVICE: 'CUSTOMERSERVICE',
 };
 
+export const DataTypes = {
+    ADMIN: 'ADMIN',
+    EMAIL: 'EMAIL',
+    PASSWORD: 'PASSWORD',
+    SETTINGS: 'SETTINGS',
+    MENU: 'MENU',
+    PRODUCT: 'PRODUCT',
+    BANK_ACCOUNT: 'BANK_ACCOUNT',
+}
+
 export const ModalTypes = {
     LOGIN: 'LOGIN',
     REGISTER: 'REGISTER',
-    DELETE_ACCOUNT: '',
-    CHANGE_EMAIL: '',
-    CHANGE_PASSWORD: '',
+    DELETE_ACCOUNT: 'DELETE_ACCOUNT',
+    CHANGE_EMAIL: 'CHANGE_EMAIL',
+    CHANGE_PASSWORD: 'CHANGE_PASSWORD',
 };
 
 export const AppName = 'Default App Name';
