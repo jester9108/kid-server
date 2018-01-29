@@ -8,7 +8,13 @@ export function navigate(target) {
     return { type: NAVIGATE, target: target }
 }
 
-/* Modal */
+/* Server request */
+export const API_REQUEST = 'API_REQUEST';
+export function apiRequest() {
+    return { type: API_REQUEST };
+}
+
+/* Modal display */
 export const SHOW_MODAL = 'SHOW_MODAL';
 export function showModal(modalType) {
     return { type: SHOW_MODAL, modalType: modalType };
@@ -19,62 +25,11 @@ export function hideModal() {
     return { type: HIDE_MODAL };
 }
 
-/* User login/logout */
-export const LOGIN_REQUEST = 'LOGIN_REQUEST';
-export function loginRequest() {
-    return { type: LOGIN_REQUEST };
-}
-
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export function loginSuccess(accessToken) {
-    return { type: LOGIN_SUCCESS, accessToken: accessToken };
-}
-
-export const LOGIN_FAILURE = 'LOGIN_FAILURE';
-export function loginFailure(error) {
-    return { type: LOGIN_FAILURE, error: error };
-}
-
-export const LOGOUT = 'LOGOUT';
-export function logout() {
-    return function (dispatch) {
-        dispatch({ type: LOGOUT });
-        localStorage.removeItem('accessToken');
-    };
-}
-
-export function login(email, password) {
-    return function (dispatch) {
-        dispatch(loginRequest());
-        const formBody = new URLSearchParams({
-            username: email,
-            password: password,
-            grant_type: 'password',
-            client_id: null,
-            client_secret: null,
-        });
-        return fetch(`${storeAPI}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-            body: formBody,
-        })
-            .then(response => response.json())
-            .then((response) => {
-                if (response.access_token) {
-                    dispatch(loginSuccess(response.access_token));
-                    localStorage.setItem('accessToken', response.access_token);
-                } else {
-                    dispatch(loginFailure(response.message));
-                }
-            });
-    }
-}
-
-/* User register */
-export const REGISTER_REQUEST = 'REGISTER_REQUEST';
-export function registerRequest() {
-    return { type: REGISTER_REQUEST };
-}
+/* User registration */
+// export const REGISTER_REQUEST = 'REGISTER_REQUEST';
+// export function registerRequest() {
+//     return { type: REGISTER_REQUEST };
+// }
 
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export function registerSuccess() {
@@ -88,7 +43,11 @@ export function registerFailure(error) {
 
 export function register(storeData) {
     return function (dispatch) {
-        dispatch(registerRequest());
+
+        // Notify server request
+        dispatch(apiRequest());
+
+        // Make request
         return fetch(`${storeAPI}/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -112,11 +71,68 @@ export function register(storeData) {
     }
 }
 
-/* User data */
-export const FETCH_USER_REQUEST = 'FETCH_USER_REQUEST';
-export function fetchUserRequest() {
-    return { type: FETCH_USER_REQUEST };
+/* User login/logout */
+// export const LOGIN_REQUEST = 'LOGIN_REQUEST';
+// export function loginRequest() {
+//     return { type: LOGIN_REQUEST };
+// }
+
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export function loginSuccess(accessToken) {
+    return { type: LOGIN_SUCCESS, accessToken: accessToken };
 }
+
+export const LOGIN_FAILURE = 'LOGIN_FAILURE';
+export function loginFailure(error) {
+    return { type: LOGIN_FAILURE, error: error };
+}
+
+export const LOGOUT = 'LOGOUT';
+export function logout() {
+    return function (dispatch) {
+        dispatch({ type: LOGOUT });
+        localStorage.removeItem('accessToken');
+    };
+}
+
+export function login(email, password) {
+    return function (dispatch) {
+
+        // Notify server request
+        dispatch(apiRequest());
+
+        // Prepare payload
+        const formBody = new URLSearchParams({
+            username: email,
+            password: password,
+            grant_type: 'password',
+            client_id: null,
+            client_secret: null,
+        });
+
+        // Make request
+        return fetch(`${storeAPI}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+            body: formBody,
+        })
+            .then(response => response.json())
+            .then((response) => {
+                if (response.access_token) {
+                    dispatch(loginSuccess(response.access_token));
+                    localStorage.setItem('accessToken', response.access_token);
+                } else {
+                    dispatch(loginFailure(response.message));
+                }
+            });
+    }
+}
+
+/* User data */
+// export const FETCH_USER_REQUEST = 'FETCH_USER_REQUEST';
+// export function fetchUserRequest() {
+//     return { type: FETCH_USER_REQUEST };
+// }
 
 export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS';
 export function fetchUserSuccess(userData) {
@@ -130,9 +146,15 @@ export function fetchUserFailure(error) {
 
 export function fetchUser() {
     return function (dispatch, getState) {
-        dispatch(fetchUserRequest());
+        
+        // Notify server request
+        dispatch(apiRequest());
+
+        // Get access token
         const { accessToken } = getState();
         if (!accessToken) return null;
+
+        // Make request
         return fetch(`${storeAPI}/me`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${accessToken}` },
@@ -143,6 +165,47 @@ export function fetchUser() {
                     dispatch(fetchUserSuccess(response.data));
                 } else {
                     dispatch(fetchUserFailure(response.message));
+                }
+            });
+    }
+}
+
+/* Reauthentication */
+export const REAUTH_SUCCESS = 'REAUTH_SUCCESS';
+export function reauthSuccess() {
+    return { type: REAUTH_SUCCESS };
+}
+
+export const REAUTH_FAILURE = 'REAUTH_FAILURE';
+export function reauthFailure(error) {
+    return { type: REAUTH_FAILURE, error: error };
+}
+
+export function reauth(password) {
+    return function (dispatch, getState) {
+
+        // Notify server request
+        dispatch(apiRequest());
+
+        // Get access token
+        const { accessToken } = getState();
+        if (!accessToken) return null;
+
+        // Make request
+        return fetch(`${storeAPI}/me/reauth`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({ password }),
+        })
+            .then(response => response.json())
+            .then((response) => {
+                if (response.success) {
+                    dispatch(reauthSuccess());
+                } else {
+                    dispatch(reauthFailure(response.message));
                 }
             });
     }
@@ -165,6 +228,12 @@ export function saveFailure(error) {
 
 export function save(newUserData, dataType) {
     return function (dispatch, getState) {
+
+        // Get access token
+        const { accessToken } = getState();
+        if (!accessToken) return null;
+
+        // Prepare payload
         let endpoint;
         let payload;
         if (dataType === DataTypes.ADMIN) {
@@ -173,9 +242,6 @@ export function save(newUserData, dataType) {
         }
 
         // Make request
-        const { accessToken } = getState();
-        if (!accessToken) return null;
-        console.log({ admin: payload })
         return fetch(`${storeAPI}/me${endpoint}`, {
             method: 'POST',
             headers: {

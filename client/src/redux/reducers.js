@@ -2,7 +2,7 @@
 import reduceReducers from 'reduce-reducers';
 
 import * as ACTION from './actions'
-import { PageTypes} from '../config';
+import { PageTypes } from '../config';
 
 /* Initial state */
 const initialState = {
@@ -12,6 +12,7 @@ const initialState = {
     isLoggedIn: false,
     modalState: {
         type: null,
+        isReauthed: false,
         error: null,
     },
     userData: null,
@@ -29,12 +30,39 @@ function navigation(state = initialState, action) {
     }
 }
 
+/* Request reducer */
+function serverRequest(state = initialState, action) {
+    switch (action.type) {
+        case ACTION.API_REQUEST:
+            return Object.assign({}, state, { isLoading: true });
+        default:
+            return state;
+    }
+}
+
 /* Modal reducer */
 function modalState(state = initialState, action) {
     switch (action.type) {
         case ACTION.SHOW_MODAL:
             return Object.assign({}, state, {
-                modalState: { type: action.modalType, error: null },
+                modalState: {
+                    type: action.modalType,
+                    isReauthed: false,
+                    error: null,
+                },
+            });
+        case ACTION.REAUTH_SUCCESS:
+            return Object.assign({}, state, {
+                isLoading: false,
+                modalState: Object.assign({}, state.modalState, { isReauthed: true }),
+            });
+        case ACTION.REAUTH_FAILURE:
+            return Object.assign({}, state, {
+                isLoading: false,
+                modalState: Object.assign({}, state.modalState, { 
+                    isReauthed: false, 
+                    error: action.error,
+                }),
             });
         case ACTION.HIDE_MODAL:
             return Object.assign({}, state, {
@@ -48,8 +76,8 @@ function modalState(state = initialState, action) {
 /* Register reducer */
 function register(state = initialState, action) {
     switch (action.type) {
-        case ACTION.REGISTER_REQUEST:
-            return Object.assign({}, state, { isLoading: true });
+        // case ACTION.REGISTER_REQUEST:
+        //     return Object.assign({}, state, { isLoading: true });
         case ACTION.REGISTER_SUCCESS:
             return Object.assign({}, state, {
                 isLoading: false,
@@ -68,8 +96,8 @@ function register(state = initialState, action) {
 /* Login reducer */
 function login(state = initialState, action) {
     switch (action.type) {
-        case ACTION.LOGIN_REQUEST:
-            return Object.assign({}, state, { isLoading: true });
+        // case ACTION.LOGIN_REQUEST:
+        //     return Object.assign({}, state, { isLoading: true });
         case ACTION.LOGIN_SUCCESS:
             return Object.assign({}, state, {
                 isLoading: false,
@@ -88,7 +116,7 @@ function login(state = initialState, action) {
             return Object.assign({}, state, {
                 isLoading: false,
                 isLoggedIn: false,
-                modalState: Object.assign(state.modalState, { error: null }),
+                modalState: Object.assign({}, state.modalState, { error: null }),
                 accessToken: null,
                 userData: null,
             });
@@ -100,8 +128,8 @@ function login(state = initialState, action) {
 /* User reducer */
 function userState(state = initialState, action) {
     switch (action.type) {
-        case ACTION.FETCH_USER_REQUEST:
-            return Object.assign({}, state, { isLoading: true });
+        // case ACTION.FETCH_USER_REQUEST:
+        //     return Object.assign({}, state, { isLoading: true });
         case ACTION.FETCH_USER_SUCCESS:
             return Object.assign({}, state, {
                 isLoading: false,
@@ -125,7 +153,7 @@ function save(state = initialState, action) {
         case ACTION.SAVE_REQUIRED:
             return Object.assign({}, state, { isSaving: true });
         case ACTION.SAVE_SUCCESS:
-            return Object.assign({}, state, { 
+            return Object.assign({}, state, {
                 isSaving: false,
                 userData: action.newUserData,
             });
@@ -136,6 +164,7 @@ function save(state = initialState, action) {
 
 const rootReducer = reduceReducers(
     navigation,
+    serverRequest,
     modalState,
     register,
     login,
