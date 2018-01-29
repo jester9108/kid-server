@@ -102,18 +102,38 @@ module.exports = (oAuth) => {
         }
     });
 
-    router.get('/me', (req, res) => {
+    router.get('/:storeId', (req, res) => {
+        let store;
+        if (req.params.storeId === 'me') {
+            store = req.user;
+        }
         res.json({
             success: true,
             message: 'Store fetched',
-            data: req.user,
+            data: store,
         });
     });
 
-    router.delete('/me', async (req, res, next) => {
+    router.post('/:storeId/admin', async (req, res, next) => {
         try {
-            if (typeof req.user.id === 'undefined') throw new Error('Invalid access token');
-            res.json(await storeService.deleteStore(req.user));
+            let store;
+            if (req.params.storeId === 'me') {
+                store = req.user;
+            }
+            const admin = req.body.admin;
+            res.json(await storeService.updateAdmin(store, admin));
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.delete('/:storeId', async (req, res, next) => {
+        try {
+            let store;
+            if (req.params.storeId === 'me') {
+                store = req.user;
+            }
+            res.json(await storeService.deleteStore(store));
         } catch (err) {
             next(err);
         }

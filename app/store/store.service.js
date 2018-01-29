@@ -85,6 +85,20 @@ class StoreService {
         }
     }
 
+    async updateAdmin(store, admin) {
+        try {
+            store.admin = admin;
+            await store.save();
+            return {
+                success: true,
+                message: 'Admin successfully updated',
+                data: [],
+            };
+        } catch (err) {
+            throw err;
+        }
+    }
+
     async deleteStore(store) {
         try {
             store.status = constants.status.deleted;
