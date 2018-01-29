@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+// import { PageTypes } from '../../config';
 import './navbar.css';
 
 class NavBar extends Component {
     static propTypes = {
+        // navigate: PropTypes.func.isRequired,
         path: PropTypes.string.isRequired,
         logout: PropTypes.func.isRequired,
-        // showLoginModal: PropTypes.func.isRequired,
         user: PropTypes.object,
     };
 
@@ -17,7 +18,6 @@ class NavBar extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log('NAV UPDATE')
         const prevTabId = (prevProps) ? prevProps.path.substring(1) : null;
         const activeTabId = this.props.path.substring(1);
         const prevTabElem = document.getElementById(prevTabId);

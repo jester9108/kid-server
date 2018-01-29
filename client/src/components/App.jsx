@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
-import { fetchUser } from '../redux/actions';
 import NavBarContainer from './navbar/NavBarContainer.jsx';
 import Main from './Main.jsx';
 import LoginContainer from './login/LoginContainer.jsx';
@@ -19,23 +16,7 @@ import LoaderContainer from './loader/LoaderContainer.jsx';
 import './App.css';
 
 class App extends Component {
-    static propTypes = {
-        fetchUser: PropTypes.func.isRequired,
-        isLoggedIn: PropTypes.bool.isRequired,
-    }
-
-    componentDidMount() {
-        this.componentDidUpdate({ isLoggedIn: false });
-    }
-
-    componentDidUpdate(prevProps) {
-        if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
-            this.props.fetchUser();
-        }
-    }
-
     render() {
-        console.log('APP RENDERING')
         return (
             <div className="App">
                 <Route component={NavBarContainer} />
@@ -71,16 +52,4 @@ class App extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        isLoggedIn: state.isLoggedIn,
-    };
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchUser: () => dispatch(fetchUser()),
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
