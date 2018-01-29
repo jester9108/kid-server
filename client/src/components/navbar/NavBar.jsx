@@ -17,6 +17,7 @@ class NavBar extends Component {
     }
 
     componentDidUpdate(prevProps) {
+        console.log('NAV UPDATE')
         const prevTabId = (prevProps) ? prevProps.path.substring(1) : null;
         const activeTabId = this.props.path.substring(1);
         const prevTabElem = document.getElementById(prevTabId);
@@ -53,8 +54,8 @@ class NavBar extends Component {
                         </span>
                         <div id='dropdown'>
                             <ul>
-                                <li><span>Account Settings</span></li>
-                                <li><span onClick={this.props.logout}>Log Out</span></li>
+                                <li><Link to='/account' id='account'>계정설정</Link></li>
+                                <li><span onClick={this.props.logout}>로그아웃</span></li>
                             </ul>
                         </div>
                     </li>
@@ -68,11 +69,6 @@ class NavBar extends Component {
                             : (<li><Link to='/login' id='login'>로그인</Link></li>)
                     }
                 </ul>
-                // <ul>
-                //     {logo}
-                //     <li><span id='register' onClick={() => { }}>Register</span></li>
-                //     <li><span id='login' onClick={this.props.showLoginModal}>Log In</span></li>
-                // </ul>
             );
 
         return <header className="App-header"><nav>{navMenu}</nav></header>;
