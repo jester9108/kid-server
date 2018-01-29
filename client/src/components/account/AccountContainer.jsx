@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { showModal, requireSave, saveChanges } from '../../redux/actions';
+import { showModal, requireSave, save } from '../../redux/actions';
 import { ModalTypes } from '../../config';
 import AccountPage from './AccountPage.jsx';
 
@@ -12,7 +12,7 @@ class AccountContainer extends Component {
         showChangeEmailModal: PropTypes.func.isRequired,
         showChangePasswordModal: PropTypes.func.isRequired,
         requireSave: PropTypes.func.isRequired,
-        saveChanges: PropTypes.func.isRequired,
+        save: PropTypes.func.isRequired,
         isSaving: PropTypes.bool.isRequired,
         userData: PropTypes.object,
     };
@@ -39,7 +39,7 @@ const mapDispatchToProps = dispatch => {
         showChangeEmailModal: () => dispatch(showModal(ModalTypes.CHANGE_EMAIL)),
         showChangePasswordModal: () => dispatch(showModal(ModalTypes.CHANGE_PASSWORD)),
         requireSave: () => dispatch(requireSave()),
-        saveChanges: (userData) => dispatch(saveChanges(userData)),
+        save: (userData, dataType) => dispatch(save(userData, dataType)),
 
     };
 }

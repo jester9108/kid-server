@@ -15,18 +15,23 @@ class LoginModal extends Component {
 
     constructor(props) {
         super(props);
-        this.onChange = this.onChange.bind(this);
-        this.login = this.login.bind(this);
-        const triggerSubmit = () => {
-            document.getElementById('loginBtn').click();
-        };
+
+        // Initial state
         this.state = { email: '', password: '' };
 
-        // constants
+        // Bind methods
+        this.onChange = this.onChange.bind(this);
+        this.login = this.login.bind(this);
+        
+        // Constants
         this.header = '로그인';
         this.email = '이메일';
         this.password = '비밀번호';
 
+        // Modal display logic
+        const triggerSubmit = () => {
+            document.getElementById('loginBtn').click();
+        };
         this.options = {
             header: this.header,
             // subheader: 'Please login',
