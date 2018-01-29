@@ -6,6 +6,7 @@ import * as ACTION from './actions'
 /* Modal reducer */
 const initialState = {
     isLoading: false,
+    isSaving: false,
     isLoggedIn: false,
     modalState: {
         type: null,
@@ -107,11 +108,24 @@ function userState(state = initialState, action) {
     }
 }
 
+/* Save reducer */
+function save(state = initialState, action) {
+    switch (action.type) {
+        case ACTION.SAVE_REQUIRED:
+            return Object.assign({}, state, { isSaving: true });
+        case ACTION.SAVE_SUCCESS:
+            return Object.assign({}, state, { isSaving: false });
+        default:
+            return state;
+    }
+}
+
 const rootReducer = reduceReducers(
     modalState,
     register,
     login,
     userState,
+    save,
 );
 
 export default rootReducer;

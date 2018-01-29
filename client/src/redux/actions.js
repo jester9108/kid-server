@@ -88,12 +88,13 @@ export function register(storeData) {
                 passwordConf: storeData.passwordConf,
                 adminName: storeData.adminName,
                 storeName: storeData.storeName,
-              }),
+            }),
         })
             .then(response => response.json())
             .then((response) => {
                 if (response.success) {
                     dispatch(registerSuccess());
+                    dispatch(login(storeData.email, storeData.password));
                 } else {
                     dispatch(registerFailure(response.message));
                 }
@@ -134,5 +135,21 @@ export function fetchUser() {
                     dispatch(fetchUserFailure(response.message));
                 }
             });
+    }
+}
+
+export const SAVE_REQUIRED = 'SAVE_REQUIRED';
+export function requireSave() {
+    return { type: SAVE_REQUIRED };
+}
+
+export const SAVE_SUCCESS = 'SAVE_SUCCESS';
+export function saveSuccess() {
+    return { type: SAVE_SUCCESS };
+}
+
+export function saveChanges(userData) {
+    return function (dispatch) {
+        dispatch(saveSuccess());
     }
 }
