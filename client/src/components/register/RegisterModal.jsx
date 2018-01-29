@@ -15,14 +15,16 @@ class RegisterModal extends Component {
 
     constructor(props) {
         super(props);
-        this.onChange = this.onChange.bind(this);
-        this.register = this.register.bind(this);
-        const triggerSubmit = () => {
-            document.getElementById('registerBtn').click();
-        };
+
+        // Initial state
         this.state = { email: '', password: '', passwordConf: '', storeName: '', adminName: '' };
 
-        // constants
+        // Bind methods
+        this.onChange = this.onChange.bind(this);
+        this.register = this.register.bind(this);
+
+        // Constants
+        this.submitBtnId = 'registerBtn';
         this.header = '회원가입';
         this.email = '이메일';
         this.password = '비밀번호';
@@ -30,10 +32,12 @@ class RegisterModal extends Component {
         this.storeName = '장소 이름';
         this.adminName = '관리자 이름';
 
+        // Modal display logic
+        const triggerSubmit = () => {
+            document.getElementById(this.submitBtnId).click();
+        };
         this.options = {
             header: this.header,
-            // subheader: 'Please login',
-            // message: 'We only support email login currently.',
             submitBtn: (
                 <Button as='label' fluid color='teal' content={this.header} tabIndex='0' onClick={triggerSubmit} />
             ),
@@ -55,9 +59,9 @@ class RegisterModal extends Component {
 
     render() {
         const { email, password, passwordConf, storeName, adminName } = this.state;
-        if (this.props.isLoggedIn) {
-            return null;
-        } else {
+        // if (this.props.isLoggedIn) {
+        //     return null;
+        // } else {
             return (
                 <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
                     <Form error={this.props.modalState.error !== null} onSubmit={this.register}>
@@ -70,14 +74,14 @@ class RegisterModal extends Component {
                                 <Form.Input label={this.passwordConf} id='passwordConf' type='password' value={passwordConf} placeholder={this.passwordConf} onChange={this.onChange} />
                                 <Form.Input label={this.storeName} id='storeName' type='text' value={storeName} placeholder={this.storeName} onChange={this.onChange} />
                                 <Form.Input label={this.adminName} id='adminName' type='text' value={adminName} placeholder={this.adminName} onChange={this.onChange} />
-                                <input id='registerBtn' type='submit' hidden />
+                                <input id={this.submitBtnId} type='submit' hidden />
                             </Grid.Column>
                             <Grid.Column width={3} />
                         </Grid>
                     </Form>
                 </ModalWrapper>
             );
-        }
+        // }
     }
 }
 

@@ -13,6 +13,7 @@ class ModalWrapper extends Component {
         submitBtn: PropTypes.element,
         isLoading: PropTypes.bool,
         onClose: PropTypes.func.isRequired,
+        size: PropTypes.string.isRequired,
         closeIcon: PropTypes.bool.isRequired,
         closeOnEscape: PropTypes.bool.isRequired,
         closeOnRootNodeClick: PropTypes.bool.isRequired,
@@ -20,6 +21,7 @@ class ModalWrapper extends Component {
     };
 
     static defaultProps = {
+        size:'tiny',
         closeIcon: true,
         closeOnEscape: true,
         closeOnRootNodeClick: true,
@@ -28,13 +30,13 @@ class ModalWrapper extends Component {
 
     render() {
         const subheader = this.props.subheader ? <Grid.Row centered>{this.props.subheader}</Grid.Row> : null;
-        const message = this.props.message ? <Grid.Row centered><Message compact>{this.props.message}</Message></Grid.Row> : null;
+        const message = this.props.message ? <Grid.Row centered><Message className='modal-message' compact negative>{this.props.message}</Message></Grid.Row> : null;
         if (this.props.isLoading) {
             return null;
         } else {
             return (
                 <Modal
-                    size='tiny'
+                    size={this.props.size}
                     open={true}
                     dimmer={this.props.dimmer}
                     onClose={this.props.onClose}
