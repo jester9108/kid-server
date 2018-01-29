@@ -1,4 +1,16 @@
 /* Constants */
+export const PageTypes = {
+    HOME: 'HOME',
+    LOGIN: 'LOGIN',
+    REGISTER: 'REGISTER',
+    ACCOUNT: 'ACCOUNT',
+    RECEPTION: 'RECEPTION',
+    DASHBOARD: 'DASHBOARD',
+    SCHEDULE: 'SCHEDULE',
+    SETTINGS: 'SETTINGS',
+    CUSTOMERSERVICE: 'CUSTOMERSERVICE',
+};
+
 export const ModalTypes = {
     LOGIN: 'LOGIN',
     REGISTER: 'REGISTER',
