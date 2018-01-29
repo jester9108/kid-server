@@ -57,56 +57,28 @@ module.exports = (oAuth) => {
         }
         oAuth.authorise()(req, res, next);
     });
-    router.use('/', (req, res, next) => {
+    router.use('/:storeId', (req, res, next) => {
         if (typeof req.user.id === 'undefined') {
             next(new Error('Invalid access token'));
         } else {
             logger.debug(`Entry authorized (${req.user.id})`);
+            if (req.params.storeId === 'me') {
+                req.store = req.user;
+            } else {
+            /**
+             * TODO: - Admin access
+             * 1. Check user is an admin
+             * 2. If not admin, fail the request
+             * 3. Find store of {storeId}
+             * 4. Set the resulting {store} as {req.store}
+             */
+            }
             next();
         }
     });
 
-    // Change email & password
-    router.post('/reauth', async (req, res, next) => {
-        try {
-            if (!req.body.password) throw new Error('Missing param: \'password\'');
-            res.json({ success: await storeService.reauthenticate(req.user, req.body.password) });
-        } catch (err) {
-            next(err);
-        }
-    });
-    router.post('/change-email', async (req, res, next) => {
-        try {
-            if (typeof req.user.id === 'undefined') throw new Error('Invalid access token');
-            const newEmail = req.body.newEmail;
-            if (!newEmail) throw new Error('Missing param: \'newEmail\'');
-            if (req.user.email === newEmail) throw new Error('Invalid param: new email must be different');
-            res.json(await storeService.changeEmail(req.user, newEmail));
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    router.post('/change-password', async (req, res, next) => {
-        try {
-            if (typeof req.user.id === 'undefined') throw new Error('Invalid access token');
-            const newPassword = req.body.newPassword;
-            const newPasswordConf = req.body.newPasswordConf;
-            if (!newPassword) throw new Error('Missing param: \'newPassword\'');
-            if (!newPasswordConf) throw new Error('Missing param: \'newPasswordConf\'');
-            if (newPassword !== newPasswordConf) throw new Error('Invalid params: passwords don\'t match');
-            if (await req.user.matchPassword(newPassword)) throw new Error('Invalid param: new password must be different');
-            res.json(await storeService.changePassword(req.user, newPassword));
-        } catch (err) {
-            next(err);
-        }
-    });
-
     router.get('/:storeId', (req, res) => {
-        let store;
-        if (req.params.storeId === 'me') {
-            store = req.user;
-        }
+        const store = req.store;
         res.json({
             success: true,
             message: 'Store fetched',
@@ -114,12 +86,46 @@ module.exports = (oAuth) => {
         });
     });
 
+    router.post('/:storeId/reauth', async (req, res, next) => {
+        try {
+            const store = req.store;
+            if (!req.body.password) throw new Error('Missing param: \'password\'');
+            res.json(await storeService.reauthenticate(store, req.body.password));
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.post('/:storeId/email', async (req, res, next) => {
+        try {
+            const store = req.store;
+            const newEmail = req.body.newEmail;
+            if (!newEmail) throw new Error('Missing param: \'newEmail\'');
+            if (store.email === newEmail) throw new Error('Invalid param: new email must be different');
+            res.json(await storeService.changeEmail(store, newEmail));
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.post('/:storeId/password', async (req, res, next) => {
+        try {
+            const store = req.store;
+            const newPassword = req.body.newPassword;
+            const newPasswordConf = req.body.newPasswordConf;
+            if (!newPassword) throw new Error('Missing param: \'newPassword\'');
+            if (!newPasswordConf) throw new Error('Missing param: \'newPasswordConf\'');
+            if (newPassword !== newPasswordConf) throw new Error('Invalid params: passwords don\'t match');
+            if (await store.matchPassword(newPassword)) throw new Error('Invalid param: new password must be different');
+            res.json(await storeService.changePassword(store, newPassword));
+        } catch (err) {
+            next(err);
+        }
+    });
+
     router.post('/:storeId/admin', async (req, res, next) => {
         try {
-            let store;
-            if (req.params.storeId === 'me') {
-                store = req.user;
-            }
+            const store = req.store;
             const admin = req.body.admin;
             res.json(await storeService.updateAdmin(store, admin));
         } catch (err) {
@@ -129,10 +135,7 @@ module.exports = (oAuth) => {
 
     router.delete('/:storeId', async (req, res, next) => {
         try {
-            let store;
-            if (req.params.storeId === 'me') {
-                store = req.user;
-            }
+            const store = req.store;
             res.json(await storeService.deleteStore(store));
         } catch (err) {
             next(err);

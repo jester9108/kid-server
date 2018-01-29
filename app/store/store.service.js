@@ -45,7 +45,11 @@ class StoreService {
     async reauthenticate(store, password) {
         try {
             const authenticated = await store.matchPassword(password);
-            return authenticated;
+            const message = (authenticated) ? 'Reauthenticated' : 'Invalid password';
+            return {
+                success: authenticated,
+                message: message,
+            };
         } catch (err) {
             throw err;
         }
