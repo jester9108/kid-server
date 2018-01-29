@@ -70,8 +70,8 @@ class AccountPage extends Component {
                         <Grid.Column width={14}>
                             <Header as='h3' dividing>{this.headerTxt}</Header>
                             <Form.Group style={{ float: 'right' }}>
-                                <Label basic color='blue' className='no-border' onClick={this.props.showChangeEmailModal}>{this.emailChangeTxt}</Label>
-                                <Label basic color='blue' className='no-border' onClick={this.props.showChangePasswordModal}>{this.pwChangeTxt}</Label>
+                                <Label basic color='blue' className='no-border option-btn' onClick={this.props.showChangeEmailModal}>{this.emailChangeTxt}</Label>
+                                <Label basic color='blue' className='no-border option-btn' onClick={this.props.showChangePasswordModal}>{this.pwChangeTxt}</Label>
                             </Form.Group>
                             <Form.Group style={{ clear: 'both' }}>
                                 <Form.Field width={16}>
@@ -92,7 +92,7 @@ class AccountPage extends Component {
                             </Form.Group>
                             <Divider section hidden />
                             <Form.Group style={{ float: 'right' }}>
-                                <Label basic color='red' className='no-border' onClick={this.props.showDeleteAccountModal}>{this.deleteAccTxt}</Label>
+                                <Label basic color='red' className='no-border option-btn' onClick={this.props.showDeleteAccountModal}>{this.deleteAccTxt}</Label>
                             </Form.Group>
                         </Grid.Column>
                         <Grid.Column width={1} />

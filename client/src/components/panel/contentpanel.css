@@ -1,16 +1,20 @@
-.content-panel{
+.content-panel {
     margin: 30px !important;
 }
 
-.no-border{
+.no-border {
     border: 0 !important;
 }
 
-.save-state{
+.option-btn {
+    cursor: pointer;
+}
+
+.save-state {
     text-align: center;
 }
 
-.loading-icon{
+.loading-icon {
     margin-bottom: 4px !important;
     margin-right: 10px !important;
 }
