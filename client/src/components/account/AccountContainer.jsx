@@ -1,0 +1,47 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { showModal, requireSave, saveChanges } from '../../redux/actions';
+import { ModalTypes } from '../../config';
+import AccountPage from './AccountPage.jsx';
+
+class AccountContainer extends Component {
+    static propTypes = {
+        showDeleteAccountModal: PropTypes.func.isRequired,
+        showChangeEmailModal: PropTypes.func.isRequired,
+        showChangePasswordModal: PropTypes.func.isRequired,
+        requireSave: PropTypes.func.isRequired,
+        saveChanges: PropTypes.func.isRequired,
+        isSaving: PropTypes.bool.isRequired,
+        userData: PropTypes.object,
+    };
+
+    render() {
+        if (this.props.userData) {
+            return <AccountPage {...this.props} />;
+        } else {
+            return null;
+        }
+    }
+}
+
+const mapStateToProps = state => {
+    return {
+        userData: state.userData,
+        isSaving: state.isSaving,
+    };
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        showDeleteAccountModal: () => dispatch(showModal(ModalTypes.DELETE_ACCOUNT)),
+        showChangeEmailModal: () => dispatch(showModal(ModalTypes.CHANGE_EMAIL)),
+        showChangePasswordModal: () => dispatch(showModal(ModalTypes.CHANGE_PASSWORD)),
+        requireSave: () => dispatch(requireSave()),
+        saveChanges: (userData) => dispatch(saveChanges(userData)),
+
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountContainer);
