@@ -3,3 +3,9 @@
     font-size: 1.2em;
     text-align: center;
 }
+
+.modal-message {
+    display: inline-block;
+    width: 70%;
+    text-align: justify;
+}
