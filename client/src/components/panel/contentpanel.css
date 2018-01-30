@@ -18,7 +18,17 @@
 }
 
 .save-state {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 5vh;
+    line-height: 5vh;
+    background-color: #587ab9be;
+    color: #FFFFFF;
+    font-size: 1.5em;
     text-align: center;
+    /* border: 1px solid #000000; */
 }
 
 .loading-icon {
@@ -30,9 +40,38 @@
     padding-right: 0 !important;
 }
 
-.ui.grid>.column:nth-child(1) {
+.ui.grid>.column.eight:nth-child(1) {
     padding-right: .5em !important;
 }
-.ui.grid>.column:nth-child(2) {
+
+.ui.grid>.column.eight:nth-child(2) {
     padding-left: .5em !important;
+}
+
+.svc-btn {
+    text-align: center;
+    cursor: pointer;
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    filter: grayscale(100%);
+    /* border: .5px solid #000000; */
+}
+
+/* .svc-btn.active */
+
+.svc-btn:hover {
+    -webkit-filter: grayscale(0%);
+    -moz-filter: grayscale(0%);
+    filter: grayscale(0%);
+}
+
+.svc-btn.active {
+    -webkit-filter: grayscale(0%);
+    -moz-filter: grayscale(0%);
+    filter: grayscale(0%);
+}
+
+.svc-icon {
+    width: 30px;
+    height: 30px;
 }

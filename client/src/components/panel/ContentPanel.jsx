@@ -24,11 +24,8 @@ class ContentPanel extends Component {
                 <Divider section clearing hidden />
                 {this.props.children}
                 <div className='save-state' hidden={!this.props.isSaving}>
-                    <Divider section clearing hidden />
-                    <Label basic color='black' className='no-border'>
-                        <Loader className='loading-icon' active inline size='mini' />
-                        {this.savingTxt}
-                    </Label>
+                    <Loader inverted className='loading-icon' active inline size='small' />
+                    {this.savingTxt}
                 </div>
                 <Divider section clearing hidden />
             </Segment>
