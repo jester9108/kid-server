@@ -49,7 +49,7 @@ class NavBar extends Component {
                     <li><Link to='/customerservice' id='customerservice'>고객지원</Link></li>
                     <li id='accountBtn'>
                         <span>
-                            {this.props.userData.settings.name}&nbsp;
+                            {this.props.userData.store.name}&nbsp;
                                 <i className='fa fa-caret-down'></i>
                         </span>
                         <div id='dropdown'>

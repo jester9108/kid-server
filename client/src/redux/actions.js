@@ -156,14 +156,16 @@ export function fetchUserFailure(error) {
     return { type: FETCH_USER_FAILURE, error: error };
 }
 
-export function fetchUser() {
+export function fetchUser(accessToken) {
     return function (dispatch, getState) {
 
         // Notify server request
         dispatch(fetchUserRequest());
 
         // Get access token
-        const { accessToken } = getState();
+        if(!accessToken){
+            accessToken = getState().accessToken;
+        }
         if (!accessToken) return null;
 
         // Make request
@@ -175,8 +177,10 @@ export function fetchUser() {
             .then((response) => {
                 if (response.success) {
                     dispatch(fetchUserSuccess(response.data));
+                    dispatch(loginSuccess(accessToken))
                 } else {
                     dispatch(fetchUserFailure(response.message));
+                    dispatch(logout())
                 }
             });
     }
@@ -259,8 +263,11 @@ export function save(newUserData, dataType) {
         let endpoint;
         let payload;
         if (dataType === DataTypes.ADMIN) {
-            endpoint = '/admin';
+            endpoint = '/admin-setting';
             payload = newUserData.admin;
+        } else if (dataType === DataTypes.STORE) {
+            endpoint = '/store-setting';
+            payload = newUserData;
         }
 
         // Make request

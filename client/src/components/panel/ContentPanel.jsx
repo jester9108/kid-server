@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Segment, Divider, Label, Loader } from 'semantic-ui-react';
+import { Segment, Divider, Loader } from 'semantic-ui-react';
 
 import './contentpanel.css';
 
