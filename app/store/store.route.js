@@ -137,7 +137,7 @@ module.exports = (oAuth) => {
         try {
             const store = req.store;
             const newStore = req.body;
-            res.json(await storeService.updateAdmin(store, newStore));
+            res.json(await storeService.updateStore(store, newStore));
         } catch (err) {
             next(err);
         }
