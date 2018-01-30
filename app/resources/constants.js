@@ -15,8 +15,18 @@ const amenities = {
     cafe: 'CAFE',
     daycare: 'DAYCARE',
 };
+const SettingTypes = {
+    admin: 'ADMIN',
+    email: 'EMAIL',
+    password: 'PASSWORD',
+    store: 'STORE',
+    menu: 'MENU',
+    product: 'PRODUCT',
+    bankAccount: 'BANK_ACCOUNT',
+};
 
 exports.status = status;
 exports.fullDayMilliseconds = fullDayMilliseconds;
 exports.emailRegex = emailRegex;
 exports.amenities = amenities;
+exports.SettingTypes = SettingTypes;

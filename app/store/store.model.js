@@ -77,7 +77,7 @@ const StoreSchema = new mongoose.Schema(
         password: { type: String, required: true },
         accessToken: { type: String, required: false },
         status: { type: String, enum: Object.values(status), default: status.pending },
-        settings: { type: SettingsSchema, default: SettingsSchema },
+        store: { type: SettingsSchema, default: SettingsSchema },
         menu: {
             type: [{
                 _id: false,

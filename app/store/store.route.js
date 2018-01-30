@@ -16,7 +16,7 @@ module.exports = (oAuth) => {
                 email: req.body.email,
                 password: req.body.password,
                 passwordConf: req.body.passwordConf,
-                settings: { name: req.body.storeName },
+                store: { name: req.body.storeName },
                 admin: { name: req.body.adminName },
             };
             const missingParams = Object.keys(params).filter(key => !params[key]);
@@ -123,11 +123,21 @@ module.exports = (oAuth) => {
         }
     });
 
-    router.post('/:storeId/admin', async (req, res, next) => {
+    router.post('/:storeId/admin-setting', async (req, res, next) => {
         try {
             const store = req.store;
-            const admin = req.body.admin;
-            res.json(await storeService.updateAdmin(store, admin));
+            const newStore = req.body;
+            res.json(await storeService.updateAdmin(store, newStore));
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.post('/:storeId/store-setting', async (req, res, next) => {
+        try {
+            const store = req.store;
+            const newStore = req.body;
+            res.json(await storeService.updateAdmin(store, newStore));
         } catch (err) {
             next(err);
         }

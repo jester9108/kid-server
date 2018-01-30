@@ -89,18 +89,45 @@ class StoreService {
         }
     }
 
-    async updateAdmin(store, admin) {
+    async update(store, newStore, settingType) {
         try {
-            store.admin = admin;
+            switch (settingType) {
+                case constants.SettingTypes.admin:
+                    store.admin = newStore.admin;
+                    break;
+                case constants.SettingTypes.store:
+                    store.store = newStore.store;
+                    break;
+                case constants.SettingTypes.menu:
+                    break;
+                case constants.SettingTypes.product:
+                    break;
+                case constants.SettingTypes.bankAccount:
+                    break;
+                case constants.SettingTypes.email:
+                    break;
+                case constants.SettingTypes.password:
+                    break;
+                default:
+                    break;
+            }
             await store.save();
             return {
                 success: true,
-                message: 'Admin successfully updated',
+                message: `Store updated (${settingType})`,
                 data: [],
             };
         } catch (err) {
             throw err;
         }
+    }
+
+    async updateAdmin(store, newStore) {
+        return this.update(store, newStore, constants.SettingTypes.admin);
+    }
+
+    async updateStore(store, newStore) {
+        return this.update(store, newStore, constants.SettingTypes.store);
     }
 
     async deleteStore(store) {
