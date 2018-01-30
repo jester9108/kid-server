@@ -1,9 +1,9 @@
-// app/dev/dev.model.js
+// app/store/store.model.js
 
 const bcrypt = require('bcryptjs');
 const db = require('../db').db;
 const mongoose = require('../db').mongoose;
-const constants = require('../constants');
+const constants = require('../resources/constants');
 
 const status = constants.status;
 const amenities = constants.amenities;

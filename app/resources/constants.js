@@ -1,4 +1,4 @@
-// app/constants.js
+// app/resources/constants.js
 
 'use strict';
 
@@ -12,7 +12,8 @@ const status = {
 const amenities = {
     parking: 'PARKING',
     playground: 'PLAYGROUND',
-    big: 'BIG',
+    cafe: 'CAFE',
+    daycare: 'DAYCARE',
 };
 
 exports.status = status;

@@ -3,7 +3,7 @@
 'use strict';
 
 const logger = require('../utils').logger;
-const constants = require('../constants');
+const constants = require('../resources/constants');
 const authService = require('../auth/auth.service');
 const authMessage = require('../auth/auth.message');
 const User = require('./user.model').Model;

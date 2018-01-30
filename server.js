@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const oAuth2Server = require('node-oauth2-server');
 const mongoDB = require('./app/db');
 const logger = require('./app/utils').logger;
-const constants = require('./app/constants');
+const constants = require('./app/resources/constants');
 const oAuthModel = require('./app/auth/accessToken.model');
 
 const app = express();

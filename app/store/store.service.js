@@ -1,4 +1,4 @@
-// app/dev/dev.service.js
+// app/store/store.service.js
 
 'use strict';
 
@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const logger = require('../utils').logger;
 const Store = require('./store.model').Model;
 const authMessage = require('../auth/auth.message');
-const constants = require('../constants');
+const constants = require('../resources/constants');
 
 class StoreService {
     async register(storeData) {

@@ -3,7 +3,7 @@
 'use strict';
 
 const express = require('express');
-const constants = require('../constants');
+const constants = require('../resources/constants');
 const userService = require('./user.service');
 
 const router = express.Router();

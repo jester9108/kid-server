@@ -3,7 +3,7 @@
 'use strict';
 
 const express = require('express');
-const constants = require('../constants');
+const constants = require('../resources/constants');
 const storeService = require('./store.service');
 const logger = require('../utils').logger;
 
@@ -65,13 +65,13 @@ module.exports = (oAuth) => {
             if (req.params.storeId === 'me') {
                 req.store = req.user;
             } else {
-            /**
-             * TODO: - Admin access
-             * 1. Check user is an admin
-             * 2. If not admin, fail the request
-             * 3. Find store of {storeId}
-             * 4. Set the resulting {store} as {req.store}
-             */
+                /**
+                 * TODO: - Admin access
+                 * 1. Check user is an admin
+                 * 2. If not admin, fail the request
+                 * 3. Find store of {storeId}
+                 * 4. Set the resulting {store} as {req.store}
+                 */
             }
             next();
         }

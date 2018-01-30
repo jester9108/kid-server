@@ -3,7 +3,7 @@
 const bcrypt = require('bcryptjs');
 const db = require('../db').db;
 const mongoose = require('../db').mongoose;
-const constants = require('../constants');
+const constants = require('../resources/constants');
 
 const status = constants.status;
 
