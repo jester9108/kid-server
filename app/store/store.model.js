@@ -5,8 +5,8 @@ const db = require('../db').db;
 const mongoose = require('../db').mongoose;
 const constants = require('../resources/constants');
 
-const status = constants.status;
-const amenities = constants.amenities;
+const Status = constants.Status;
+const AmenityType = constants.AmenityType;
 
 function checkArraySize(val) { return val.length <= 10; }
 function checkAge(val) { return val.max >= val.min; }
@@ -38,7 +38,7 @@ const SettingsSchema = new mongoose.Schema({
         }],
         required: false,
     },
-    amenities: { type: [String], enum: Object.values(amenities), required: false },
+    amenities: { type: [String], enum: Object.values(AmenityType), required: false },
     images: { type: [String], required: false },
 });
 const ProductSchema = new mongoose.Schema({
@@ -76,7 +76,7 @@ const StoreSchema = new mongoose.Schema(
         email: { type: String, required: true },
         password: { type: String, required: true },
         accessToken: { type: String, required: false },
-        status: { type: String, enum: Object.values(status), default: status.pending },
+        status: { type: String, enum: Object.values(Status), default: Status.pending },
         store: { type: SettingsSchema, default: SettingsSchema },
         menu: {
             type: [{
@@ -133,7 +133,7 @@ StoreSchema.statics.hashPassword = async function (password) {
 StoreSchema.statics.authenticate = async function (email, password) {
     try {
         const Store = this; // db.model('Store')
-        const store = await Store.findOne({ email: email, status: { $ne: status.deleted } });
+        const store = await Store.findOne({ email: email, status: { $ne: Status.deleted } });
         if (!store) {
             const error = new Error('No store with the given \'email\'');
             error.status = 401;
@@ -153,7 +153,7 @@ StoreSchema.statics.authenticate = async function (email, password) {
 StoreSchema.statics.checkEmail = async function (email) {
     try {
         const Store = this; // db.model('Store')
-        const dupeEmail = await Store.findOne({ email: email, status: { $ne: status.deleted } });
+        const dupeEmail = await Store.findOne({ email: email, status: { $ne: Status.deleted } });
         if (dupeEmail) throw new Error('Invalid params: Email already in use');
     } catch (err) {
         throw err;

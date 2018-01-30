@@ -35,7 +35,7 @@ class StoreService {
 
     async getStoreFromBearerToken(bearerToken) {
         try {
-            const store = await Store.findOne({ accessToken: bearerToken, status: { $ne: constants.status.deleted } });
+            const store = await Store.findOne({ accessToken: bearerToken, status: { $ne: constants.Status.deleted } });
             return store;
         } catch (err) {
             throw err;
@@ -92,21 +92,21 @@ class StoreService {
     async update(store, newStore, settingType) {
         try {
             switch (settingType) {
-                case constants.SettingTypes.admin:
+                case constants.SettingType.admin:
                     store.admin = newStore.admin;
                     break;
-                case constants.SettingTypes.store:
+                case constants.SettingType.store:
                     store.store = newStore.store;
                     break;
-                case constants.SettingTypes.menu:
+                case constants.SettingType.menu:
                     break;
-                case constants.SettingTypes.product:
+                case constants.SettingType.product:
                     break;
-                case constants.SettingTypes.bankAccount:
+                case constants.SettingType.bankAccount:
                     break;
-                case constants.SettingTypes.email:
+                case constants.SettingType.email:
                     break;
-                case constants.SettingTypes.password:
+                case constants.SettingType.password:
                     break;
                 default:
                     break;
@@ -123,16 +123,16 @@ class StoreService {
     }
 
     async updateAdmin(store, newStore) {
-        return this.update(store, newStore, constants.SettingTypes.admin);
+        return this.update(store, newStore, constants.SettingType.admin);
     }
 
     async updateStore(store, newStore) {
-        return this.update(store, newStore, constants.SettingTypes.store);
+        return this.update(store, newStore, constants.SettingType.store);
     }
 
     async deleteStore(store) {
         try {
-            store.status = constants.status.deleted;
+            store.status = constants.Status.deleted;
             store.accessToken = null;
             await store.save();
             return {

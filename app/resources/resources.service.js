@@ -7,11 +7,15 @@ const constants = require('./constants');
 class Constants {
     async getValues(type) {
         try {
-            const success = constants.hasOwnProperty(type)
+            let resource;
+            if (type === 'amenities') {
+                resource = constants.AmenityType;
+            }
+            const success = typeof resource !== 'undefined';
             return {
                 success: success,
                 message: `Fetch ${success ? 'successful' : 'failed'}`,
-                data: constants[type],
+                data: resource,
             };
         } catch (err) {
             throw err;

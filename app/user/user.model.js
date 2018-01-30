@@ -5,7 +5,7 @@ const db = require('../db').db;
 const mongoose = require('../db').mongoose;
 const constants = require('../resources/constants');
 
-const status = constants.status;
+const status = constants.Status;
 
 const UserSchema = new mongoose.Schema(
     {
