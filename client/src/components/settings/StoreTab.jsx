@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Form, Grid, Divider, Header, Label, Segment } from 'semantic-ui-react';
 
 import ContentPanel from '../panel/ContentPanel.jsx';
+import AmenityIcon from '../assets/AmenityIcon.jsx';
 import { DataTypes } from '../../config';
 
 class StoreTab extends Component {
@@ -16,8 +17,7 @@ class StoreTab extends Component {
 
     constructor(props) {
         super(props);
-        console.log(props)
-        console.log(props.userData.settings.age)
+
         // Initial state
         this.state = {
             storeName: props.userData.settings.name || '',
@@ -30,12 +30,16 @@ class StoreTab extends Component {
             ageMax: props.userData.settings.age.max || 12,
             maxCapacity: props.userData.settings.maxCapacity || 100,
             openHours: props.userData.settings.openHour || [],
+            amenities: props.userData.settings.amenities || [],
+            images: props.userData.settings.images || [],
+            amenityList: {},
             saveCallback: null,
         }
 
         // Bind methods
         this.onChange = this.onChange.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
+        this.toggleAmenities = this.toggleAmenities.bind(this);
 
         // Constants
         this.headerTxt = '기본정보';
@@ -55,6 +59,26 @@ class StoreTab extends Component {
         this.headerTxt3 = '이미지';
     }
 
+    componentDidMount() {
+        fetch('/api/resources/amenities', {
+            method: 'GET',
+            headers: {
+                // 'Authorization': `Bearer ${accessToken}`,
+                // 'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then((response) => {
+                if (response.success) {
+                    this.setState({ amenityList: response.data })
+                    console.log('AMENITIES FETCHED')
+                    console.log(this.state)
+                } else {
+                    // dispatch(saveFailure(response.message));
+                }
+            });
+    }
+
     onChange(event) {
         clearTimeout(this.state.saveCallback);
         const saveCallback = setTimeout(this.saveChanges, 1500);
@@ -72,7 +96,17 @@ class StoreTab extends Component {
                 phone: this.state.adminPhone,
             },
         });
-        // this.props.save(newUserData, DataTypes.ADMIN);
+        this.props.save(newUserData, DataTypes.ADMIN);
+    }
+
+    toggleAmenities(amenityType) {
+        let newAmenities = this.state.amenities.slice(0);
+        if (newAmenities.indexOf(amenityType) < 0) {
+            newAmenities.push(amenityType);
+        } else {
+            newAmenities.splice(newAmenities.indexOf(amenityType), 1);
+        }
+        this.setState({ amenities: newAmenities });
     }
 
     render() {
@@ -181,6 +215,16 @@ class StoreTab extends Component {
                             {/* Amenities */}
                             <div>
                                 <Header as='h3' dividing>{this.headerTxt2}</Header>
+                                <Grid>
+                                    {
+                                        Object.values(this.state.amenityList)
+                                            .map((amenityType) => (
+                                                <Grid.Column key={amenityType} width={2}>
+                                                    <AmenityIcon type={amenityType} selected={this.state.amenities} onToggle={this.toggleAmenities} />
+                                                </Grid.Column>
+                                            ))
+                                    }
+                                </Grid>
                                 <Divider hidden section />
                             </div>
                             <Divider hidden section />
