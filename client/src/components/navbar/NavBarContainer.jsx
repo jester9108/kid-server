@@ -12,7 +12,7 @@ class NavBarContainer extends Component {
         fetchUser: PropTypes.func.isRequired,
         // navigate: PropTypes.func.isRequired,
         logout: PropTypes.func.isRequired,
-        user: PropTypes.object,
+        userData: PropTypes.object,
     };
 
     constructor(props) {
@@ -34,7 +34,7 @@ class NavBarContainer extends Component {
     }
 
     render() {
-        return <NavBar path={this.props.location.pathname} user={this.props.user} {...this.actions} />;
+        return <NavBar path={this.props.location.pathname} userData={this.props.userData} {...this.actions} />;
     }
 }
 
@@ -42,7 +42,7 @@ const mapStateToProps = state => {
     return {
         activePage: state.activePage,
         isLoggedIn: state.isLoggedIn,
-        user: state.userData,
+        userData: state.userData,
     };
 }
 

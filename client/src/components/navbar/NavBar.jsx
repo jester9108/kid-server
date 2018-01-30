@@ -10,7 +10,7 @@ class NavBar extends Component {
         // navigate: PropTypes.func.isRequired,
         path: PropTypes.string.isRequired,
         logout: PropTypes.func.isRequired,
-        user: PropTypes.object,
+        userData: PropTypes.object,
     };
 
     componentDidMount() {
@@ -38,7 +38,7 @@ class NavBar extends Component {
                             </Link>
             </li>
         );
-        const navMenu = (this.props.user)
+        const navMenu = (this.props.userData)
             ? (
                 <ul>
                     {logo}
@@ -49,7 +49,7 @@ class NavBar extends Component {
                     <li><Link to='/customerservice' id='customerservice'>고객지원</Link></li>
                     <li id='accountBtn'>
                         <span>
-                            {this.props.user.settings.name}&nbsp;
+                            {this.props.userData.settings.name}&nbsp;
                                 <i className='fa fa-caret-down'></i>
                         </span>
                         <div id='dropdown'>

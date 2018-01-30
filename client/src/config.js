@@ -15,7 +15,7 @@ export const DataTypes = {
     ADMIN: 'ADMIN',
     EMAIL: 'EMAIL',
     PASSWORD: 'PASSWORD',
-    SETTINGS: 'SETTINGS',
+    STORE: 'STORE',
     MENU: 'MENU',
     PRODUCT: 'PRODUCT',
     BANK_ACCOUNT: 'BANK_ACCOUNT',
