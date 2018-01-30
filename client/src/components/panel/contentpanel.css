@@ -2,6 +2,13 @@
     margin: 30px !important;
 }
 
+.content-panel .content-panel {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0;
+    box-shadow: none;
+}
+
 .no-border {
     border: 0 !important;
 }
@@ -17,4 +24,15 @@
 .loading-icon {
     margin-bottom: 4px !important;
     margin-right: 10px !important;
+}
+
+.inline.unstackable.fields>.field {
+    padding-right: 0 !important;
+}
+
+.ui.grid>.column:nth-child(1) {
+    padding-right: .5em !important;
+}
+.ui.grid>.column:nth-child(2) {
+    padding-left: .5em !important;
 }
