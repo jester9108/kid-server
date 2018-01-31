@@ -45,6 +45,7 @@ class AwsService {
                 Bucket: bucketName, // Name of s3 bucket
                 Key: `${store.id}-${store.store.name}/${dir}/${Date.now()}-${file.originalname}`, // Name of file
                 Body: fileStream, // File stream
+                // TODO: ACL permission
             };
 
             // Call S3 to retrieve upload file to specified bucket
