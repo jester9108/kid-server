@@ -161,7 +161,13 @@ function save(state = initialState, action) {
         case ACTION.SAVE_SUCCESS:
             return Object.assign({}, state, {
                 isSaving: false,
+                error: null,
                 userData: action.newUserData,
+            });
+        case ACTION.SAVE_FAILURE:
+            return Object.assign({}, state, {
+                isSaving: false,
+                error: action.error,
             });
         default:
             return state;

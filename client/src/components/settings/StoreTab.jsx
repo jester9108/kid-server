@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Grid, Divider, Header, Label, Segment } from 'semantic-ui-react';
+import { Form, Grid, Divider, Header, Label, Segment, Message } from 'semantic-ui-react';
 
 import ContentPanel from '../panel/ContentPanel.jsx';
 import AmenityIcon from '../assets/AmenityIcon.jsx';
@@ -13,6 +13,7 @@ class StoreTab extends Component {
         save: PropTypes.func.isRequired,
         userData: PropTypes.object.isRequired,
         isSaving: PropTypes.bool.isRequired,
+        error: PropTypes.string,
     };
 
     constructor(props) {
@@ -124,7 +125,8 @@ class StoreTab extends Component {
     render() {
         return (
             <ContentPanel isSaving={this.props.isSaving}>
-                <Form success={false} error={false} onSubmit={this.login}>
+                <Form success={false} error={this.props.error} onSubmit={this.login}>
+                    <Message error header='오류' content={this.props.error} />
                     <Grid>
                         <Grid.Column width={1} />
                         <Grid.Column width={14}>
