@@ -20,19 +20,19 @@ class StoreTab extends Component {
 
         // Initial state
         this.state = {
-            storeName: props.userData.settings.name || '',
-            address: props.userData.settings.address || '',
-            description: props.userData.settings.description || '',
-            storePhone: props.userData.settings.phone || '',
-            website: props.userData.settings.website || '',
-            tag: props.userData.settings.tag || [],
-            ageMin: (typeof props.userData.settings.age.min === 'undefined') ? 4 : props.userData.settings.age.min,
-            ageMax: props.userData.settings.age.max || 12,
-            maxCapacity: props.userData.settings.maxCapacity || 100,
-            openHours: props.userData.settings.openHour || [],
-            amenities: props.userData.settings.amenities || [],
-            images: props.userData.settings.images || [],
-            amenityList: {},
+            storeName: props.userData.store.name || '',
+            address: props.userData.store.address || '',
+            description: props.userData.store.description || '',
+            storePhone: props.userData.store.phone || '',
+            website: props.userData.store.website || '',
+            tag: props.userData.store.tag || [],
+            ageMin: (typeof props.userData.store.age.min === 'undefined') ? 4 : props.userData.store.age.min,
+            ageMax: props.userData.store.age.max || 12,
+            maxCapacity: props.userData.store.maxCapacity || 100,
+            openHours: props.userData.store.openHour || [],
+            amenities: props.userData.store.amenities || [],
+            images: props.userData.store.images || [],
+            amenityTypes: {},
             saveCallback: null,
         }
 
@@ -70,13 +70,26 @@ class StoreTab extends Component {
             .then(response => response.json())
             .then((response) => {
                 if (response.success) {
-                    this.setState({ amenityList: response.data })
+                    this.setState({ amenityTypes: response.data })
                     console.log('AMENITIES FETCHED')
                     console.log(this.state)
                 } else {
                     // dispatch(saveFailure(response.message));
                 }
             });
+    }
+
+    toggleAmenities(amenityType) {
+        clearTimeout(this.state.saveCallback);
+        const saveCallback = setTimeout(this.saveChanges, 1500);
+        let newAmenities = this.state.amenities.slice(0);
+        if (newAmenities.indexOf(amenityType) < 0) {
+            newAmenities.push(amenityType);
+        } else {
+            newAmenities.splice(newAmenities.indexOf(amenityType), 1);
+        }
+        this.setState({ amenities: newAmenities, saveCallback: saveCallback });
+        this.props.requireSave();
     }
 
     onChange(event) {
@@ -91,22 +104,21 @@ class StoreTab extends Component {
 
     saveChanges() {
         const newUserData = Object.assign({}, this.props.userData, {
-            admin: {
-                name: this.state.adminName,
-                phone: this.state.adminPhone,
+            store: {
+                name: this.state.storeName,
+                address: this.state.address,
+                description: this.state.description,
+                phone: this.state.storePhone,
+                website: this.state.website,
+                tag: this.state.tag,
+                age: { min: this.state.ageMin, max: this.state.ageMax },
+                maxCapacity: this.state.maxCapacity,
+                openHour: this.state.openHours,
+                amenities: this.state.amenities,
+                images: this.state.images,
             },
         });
-        this.props.save(newUserData, DataTypes.ADMIN);
-    }
-
-    toggleAmenities(amenityType) {
-        let newAmenities = this.state.amenities.slice(0);
-        if (newAmenities.indexOf(amenityType) < 0) {
-            newAmenities.push(amenityType);
-        } else {
-            newAmenities.splice(newAmenities.indexOf(amenityType), 1);
-        }
-        this.setState({ amenities: newAmenities });
+        this.props.save(newUserData, DataTypes.STORE);
     }
 
     render() {
@@ -217,7 +229,7 @@ class StoreTab extends Component {
                                 <Header as='h3' dividing>{this.headerTxt2}</Header>
                                 <Grid>
                                     {
-                                        Object.values(this.state.amenityList)
+                                        Object.values(this.state.amenityTypes)
                                             .map((amenityType) => (
                                                 <Grid.Column key={amenityType} width={2}>
                                                     <AmenityIcon type={amenityType} selected={this.state.amenities} onToggle={this.toggleAmenities} />
