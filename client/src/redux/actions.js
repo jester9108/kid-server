@@ -261,13 +261,10 @@ export function save(newUserData, dataType) {
 
         // Prepare payload
         let endpoint;
-        let payload;
         if (dataType === DataTypes.ADMIN) {
             endpoint = '/admin-setting';
-            payload = newUserData.admin;
         } else if (dataType === DataTypes.STORE) {
             endpoint = '/store-setting';
-            payload = newUserData;
         }
 
         // Make request
@@ -277,7 +274,7 @@ export function save(newUserData, dataType) {
                 'Authorization': `Bearer ${accessToken}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ admin: payload }),
+            body: JSON.stringify(newUserData),
         })
             .then(response => response.json())
             .then((response) => {
