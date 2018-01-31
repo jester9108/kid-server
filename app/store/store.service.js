@@ -93,7 +93,8 @@ class StoreService {
         try {
             switch (settingType) {
                 case constants.SettingType.admin:
-                    store.admin = newStore.admin;
+                    store.admin.name = newStore.admin.name;
+                    store.admin.phone = newStore.admin.phone;
                     break;
                 case constants.SettingType.store:
                     store.store = newStore.store;
