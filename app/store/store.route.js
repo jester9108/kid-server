@@ -3,14 +3,16 @@
 'use strict';
 
 const express = require('express');
+const multer = require('multer');
 const constants = require('../resources/constants');
 const storeService = require('./store.service');
 const logger = require('../utils').logger;
 
 const router = express.Router();
+const upload = multer({ dest: 'uploads/' });
 
 module.exports = (oAuth) => {
-    router.post('/register', async (req, res, next) => {
+    router.post('/register', upload.single('businessPaper'), async (req, res, next) => {
         try {
             const params = {
                 email: req.body.email,
@@ -18,6 +20,7 @@ module.exports = (oAuth) => {
                 passwordConf: req.body.passwordConf,
                 store: { name: req.body.storeName },
                 admin: { name: req.body.adminName },
+                businessPaper: req.body.businessPaper,
             };
             const missingParams = Object.keys(params).filter(key => !params[key]);
             if (missingParams.length > 0) {
