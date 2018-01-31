@@ -17,7 +17,7 @@ class RegisterModal extends Component {
         super(props);
 
         // Initial state
-        this.state = { email: '', password: '', passwordConf: '', storeName: '', adminName: '', businessPaper: '' };
+        this.state = { email: '', password: '', passwordConf: '', storeName: '', adminName: '', bizRegCert: '' };
 
         // Bind methods
         this.onChange = this.onChange.bind(this);
@@ -31,7 +31,7 @@ class RegisterModal extends Component {
         this.passwordConfTxt = '비밀번호 확인';
         this.storeNameTxt = '장소 이름';
         this.adminNameTxt = '관리자 이름';
-        this.bizPaperTxt = '사업자 등록증 (PDF 파일)';
+        this.bizRegCertTxt = '사업자 등록증 (PDF 파일)';
 
         // Modal display logic
         const triggerSubmit = () => {
@@ -53,8 +53,11 @@ class RegisterModal extends Component {
         this.setState({ [id]: value });
     }
 
-    register(/* event */) {
-        this.props.register(this.state);
+    register(event) {
+        const storeData = Object.assign({}, this.state);
+        // Cannot get the file binary from this.state, so fetch manually from form elements
+        storeData.bizRegCert = event.target.elements.bizRegCert.files[0];
+        this.props.register(storeData);
         this.setState({ password: '', passwordConf: '' });
     }
 
@@ -66,7 +69,7 @@ class RegisterModal extends Component {
 
     render() {
         console.log(this.state)
-        const { email, password, passwordConf, storeName, adminName, businessPaper } = this.state;
+        const { email, password, passwordConf, storeName, adminName, bizRegCert } = this.state;
         return (
             <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
                 <Form error={this.props.modalState.error !== null} onSubmit={this.register}>
@@ -79,7 +82,7 @@ class RegisterModal extends Component {
                             <Form.Input label={this.passwordConfTxt} id='passwordConf' type='password' value={passwordConf} placeholder={this.passwordConfTxt} onChange={this.onChange} />
                             <Form.Input label={this.storeNameTxt} id='storeName' type='text' value={storeName} placeholder={this.storeNameTxt} onChange={this.onChange} />
                             <Form.Input label={this.adminNameTxt} id='adminName' type='text' value={adminName} placeholder={this.adminNameTxt} onChange={this.onChange} />
-                            <Form.Input label={this.bizPaperTxt} id='businessPaper' type='file' value={businessPaper} onChange={this.onChange} />
+                            <Form.Input label={this.bizRegCertTxt} id='bizRegCert' type='file' value={bizRegCert} onChange={this.onChange} />
                             <input id={this.submitBtnIdTxt} type='submit' hidden />
                         </Grid.Column>
                         <Grid.Column width={3} />

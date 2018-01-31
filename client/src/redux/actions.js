@@ -62,11 +62,12 @@ export function register(storeData) {
         payload.append('passwordConf', storeData.passwordConf);
         payload.append('storeName', storeData.storeName);
         payload.append('adminName', storeData.adminName);
-        payload.append('businessPaper', storeData.businessPaper);
+        payload.append('bizRegCert', storeData.bizRegCert);
 
         // Make request
         return fetch(`${storeAPI}/register`, {
             method: 'POST',
+            // Do not include 'Content-Type' header so that browser can fill boundary itself
             headers: { /* 'Content-Type': 'multipart/form-data' */ },
             body: payload,
         })
