@@ -25,7 +25,7 @@ class AmenityIcon extends Component {
         const amenity = amenities[props.type];
         this.state = {
             amenity: amenity,
-            active: props.selected.includes(amenity),
+            active: props.selected.indexOf(props.type) >= 0,
         };
     }
 
