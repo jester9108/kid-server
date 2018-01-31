@@ -55,17 +55,20 @@ export function register(storeData) {
         // Notify server request
         dispatch(registerRequest());
 
+        // Prepare payload
+        const payload = new FormData();
+        payload.append('email', storeData.email);
+        payload.append('password', storeData.password);
+        payload.append('passwordConf', storeData.passwordConf);
+        payload.append('storeName', storeData.storeName);
+        payload.append('adminName', storeData.adminName);
+        payload.append('businessPaper', storeData.businessPaper);
+
         // Make request
         return fetch(`${storeAPI}/register`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: storeData.email,
-                password: storeData.password,
-                passwordConf: storeData.passwordConf,
-                adminName: storeData.adminName,
-                storeName: storeData.storeName,
-            }),
+            headers: { /* 'Content-Type': 'multipart/form-data' */ },
+            body: payload,
         })
             .then(response => response.json())
             .then((response) => {
@@ -163,7 +166,7 @@ export function fetchUser(accessToken) {
         dispatch(fetchUserRequest());
 
         // Get access token
-        if(!accessToken){
+        if (!accessToken) {
             accessToken = getState().accessToken;
         }
         if (!accessToken) return null;

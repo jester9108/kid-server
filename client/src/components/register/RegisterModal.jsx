@@ -17,29 +17,30 @@ class RegisterModal extends Component {
         super(props);
 
         // Initial state
-        this.state = { email: '', password: '', passwordConf: '', storeName: '', adminName: '' };
+        this.state = { email: '', password: '', passwordConf: '', storeName: '', adminName: '', businessPaper: '' };
 
         // Bind methods
         this.onChange = this.onChange.bind(this);
         this.register = this.register.bind(this);
 
         // Constants
-        this.submitBtnId = 'registerBtn';
-        this.header = '회원가입';
-        this.email = '이메일';
-        this.password = '비밀번호';
-        this.passwordConf = '비밀번호 확인';
-        this.storeName = '장소 이름';
-        this.adminName = '관리자 이름';
+        this.submitBtnIdTxt = 'registerBtn';
+        this.headerTxt = '회원가입';
+        this.emailTxt = '이메일';
+        this.passwordTxt = '비밀번호';
+        this.passwordConfTxt = '비밀번호 확인';
+        this.storeNameTxt = '장소 이름';
+        this.adminNameTxt = '관리자 이름';
+        this.bizPaperTxt = '사업자 등록증 (PDF 파일)';
 
         // Modal display logic
         const triggerSubmit = () => {
-            document.getElementById(this.submitBtnId).click();
+            document.getElementById(this.submitBtnIdTxt).click();
         };
         this.options = {
-            header: this.header,
+            header: this.headerTxt,
             submitBtn: (
-                <Button as='label' fluid color='teal' content={this.header} tabIndex='0' onClick={triggerSubmit} />
+                <Button as='label' fluid color='teal' content={this.headerTxt} tabIndex='0' onClick={triggerSubmit} />
             ),
             dimmer: false,
             closeOnEscape: false,
@@ -64,7 +65,8 @@ class RegisterModal extends Component {
     }
 
     render() {
-        const { email, password, passwordConf, storeName, adminName } = this.state;
+        console.log(this.state)
+        const { email, password, passwordConf, storeName, adminName, businessPaper } = this.state;
         return (
             <ModalWrapper {...this.options} isLoading={this.props.isLoading} onClose={this.props.hideModal} >
                 <Form error={this.props.modalState.error !== null} onSubmit={this.register}>
@@ -72,12 +74,13 @@ class RegisterModal extends Component {
                         <Grid.Column width={3} />
                         <Grid.Column width={10}>
                             <Message error header='오류' content={this.props.modalState.error} />
-                            <Form.Input label={this.email} id='email' type='text' value={email} placeholder={this.email} onChange={this.onChange} />
-                            <Form.Input label={this.password} id='password' type='password' value={password} placeholder={this.password} onChange={this.onChange} />
-                            <Form.Input label={this.passwordConf} id='passwordConf' type='password' value={passwordConf} placeholder={this.passwordConf} onChange={this.onChange} />
-                            <Form.Input label={this.storeName} id='storeName' type='text' value={storeName} placeholder={this.storeName} onChange={this.onChange} />
-                            <Form.Input label={this.adminName} id='adminName' type='text' value={adminName} placeholder={this.adminName} onChange={this.onChange} />
-                            <input id={this.submitBtnId} type='submit' hidden />
+                            <Form.Input label={this.emailTxt} id='email' type='text' value={email} placeholder={this.emailTxt} onChange={this.onChange} />
+                            <Form.Input label={this.passwordTxt} id='password' type='password' value={password} placeholder={this.passwordTxt} onChange={this.onChange} />
+                            <Form.Input label={this.passwordConfTxt} id='passwordConf' type='password' value={passwordConf} placeholder={this.passwordConfTxt} onChange={this.onChange} />
+                            <Form.Input label={this.storeNameTxt} id='storeName' type='text' value={storeName} placeholder={this.storeNameTxt} onChange={this.onChange} />
+                            <Form.Input label={this.adminNameTxt} id='adminName' type='text' value={adminName} placeholder={this.adminNameTxt} onChange={this.onChange} />
+                            <Form.Input label={this.bizPaperTxt} id='businessPaper' type='file' value={businessPaper} onChange={this.onChange} />
+                            <input id={this.submitBtnIdTxt} type='submit' hidden />
                         </Grid.Column>
                         <Grid.Column width={3} />
                     </Grid>
