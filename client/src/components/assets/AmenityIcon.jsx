@@ -15,7 +15,7 @@ class AmenityIcon extends Component {
             PARKING: { name: '주차', icon: 'svc-parking.svg' },
             PLAYGROUND: { name: '놀이기구', icon: 'svc-playground.svg' },
             CAFE: { name: '카페', icon: 'svc-cafe.svg' },
-            DAYCARE: { name: '애봐줌', icon: 'svc-playground.svg' },
+            DAYCARE: { name: '애봐줌', icon: 'svc-babycare.svg' },
         };
 
         // Bind methods
