@@ -3,6 +3,7 @@
 const bcrypt = require('bcryptjs');
 const db = require('../db').db;
 const mongoose = require('../db').mongoose;
+const aws = require('../aws/aws.service');
 const constants = require('../resources/constants');
 
 const Status = constants.Status;
@@ -69,6 +70,7 @@ const AdminSchema = new mongoose.Schema({
     _id: false,
     name: { type: String, required: true },
     phone: { type: String, required: false },
+    bizRegCert: { type: Object, required: true },
 });
 
 const StoreSchema = new mongoose.Schema(
@@ -104,7 +106,7 @@ const StoreSchema = new mongoose.Schema(
     }
 );
 
-// Hashing a password before saving it to the database
+// (Runs after validation) - Hashing a password before saving it to the database
 StoreSchema.pre('save', async function (next) {
     const Store = db.model('Store');
     const store = this;
@@ -114,6 +116,8 @@ StoreSchema.pre('save', async function (next) {
             await Store.checkEmail(store.email);
             const hash = await store.schema.statics.hashPassword(store.password, parseInt(process.env.SALT, 10));
             store.password = hash;
+            const uploadResult = await aws.uploadToBucket('kid-businesses', store, 'bizRegCert', store.admin.bizRegCert);
+            store.admin.bizRegCert = { url: uploadResult.Location };
         }
         next();
     } catch (err) {

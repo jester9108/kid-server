@@ -12,15 +12,18 @@ const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
 module.exports = (oAuth) => {
-    router.post('/register', upload.single('businessPaper'), async (req, res, next) => {
+    router.post('/register', upload.single('bizRegCert'), async (req, res, next) => {
         try {
+            console.log(req.file);
             const params = {
                 email: req.body.email,
                 password: req.body.password,
                 passwordConf: req.body.passwordConf,
                 store: { name: req.body.storeName },
-                admin: { name: req.body.adminName },
-                businessPaper: req.body.businessPaper,
+                admin: {
+                    name: req.body.adminName,
+                    bizRegCert: req.file,
+                },
             };
             const missingParams = Object.keys(params).filter(key => !params[key]);
             if (missingParams.length > 0) {
