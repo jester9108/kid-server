@@ -32,7 +32,7 @@ class AwsService {
         }
     }
 
-    async uploadToBucket(bucketName, store, dir, file) {
+    async uploadToBucket(bucketName, store, dir, file, id) {
         try {
             // Generate file stream
             const fileStream = fs.createReadStream(file.path);
@@ -41,11 +41,11 @@ class AwsService {
             });
 
             // Prepare upload params
+            const fileExt = file.originalname.slice(file.originalname.lastIndexOf('.'));
             const uploadParams = {
                 Bucket: bucketName, // Name of s3 bucket
-                Key: `${store.id}-${store.store.name}/${dir}/${Date.now()}-${file.originalname}`, // Name of file
+                Key: `${store.id}-${store.store.name}/${dir}/${`${id}${fileExt}` || `${Date.now()}-${file.originalname}`}`, // Name of file
                 Body: fileStream, // File stream
-                // TODO: ACL permission
             };
 
             // Call S3 to retrieve upload file to specified bucket

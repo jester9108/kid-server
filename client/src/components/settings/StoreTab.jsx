@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Grid, Divider, Header, Label, Segment, Message } from 'semantic-ui-react';
+import { Form, Grid, Divider, Header, Label, Segment, Message, Image } from 'semantic-ui-react';
 
 import ContentPanel from '../panel/ContentPanel.jsx';
 import AmenityIcon from '../assets/AmenityIcon.jsx';
@@ -8,7 +8,6 @@ import { DataTypes } from '../../config';
 
 class StoreTab extends Component {
     static propTypes = {
-        // showDeleteAccountModal: PropTypes.func.isRequired,
         requireSave: PropTypes.func.isRequired,
         save: PropTypes.func.isRequired,
         userData: PropTypes.object.isRequired,
@@ -34,6 +33,8 @@ class StoreTab extends Component {
             amenities: props.userData.store.amenities || [],
             images: props.userData.store.images || [],
             amenityTypes: {},
+            localFiles: {},
+            nextFileIndex: 0,
             saveCallback: null,
         }
 
@@ -41,6 +42,7 @@ class StoreTab extends Component {
         this.onChange = this.onChange.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
         this.toggleAmenities = this.toggleAmenities.bind(this);
+        this.addImage = this.addImage.bind(this);
 
         // Constants
         this.headerTxt = '기본정보';
@@ -56,6 +58,7 @@ class StoreTab extends Component {
         this.maxCapTxt = '수용 인원';
         this.openHourTxt = '영업 시간';
         this.addOpenHourTxt = '영업 시간 추가';
+        this.addImageTxt = '사진 추가';
         this.headerTxt2 = '서비스';
         this.headerTxt3 = '이미지';
     }
@@ -72,8 +75,6 @@ class StoreTab extends Component {
             .then((response) => {
                 if (response.success) {
                     this.setState({ amenityTypes: response.data })
-                    console.log('AMENITIES FETCHED')
-                    console.log(this.state)
                 } else {
                     // dispatch(saveFailure(response.message));
                 }
@@ -93,13 +94,49 @@ class StoreTab extends Component {
         this.props.requireSave();
     }
 
+    addImage(event) {
+        const fileInput = event.target;
+        if (fileInput.files && fileInput.files[0]) {
+            clearTimeout(this.state.saveCallback);
+            const saveCallback = setTimeout(this.saveChanges, 1500);
+
+            // Store file locally
+            const fileIndex = this.state.nextFileIndex;
+            const newFileIndex = this.state.nextFileIndex + 1;
+
+            const file = fileInput.files[0];
+            const src = URL.createObjectURL(file);
+            const newFiles = Object.assign({}, this.state.localFiles, {
+                [fileIndex]: file,
+            });
+
+            // Add to images with reference
+            const newImages = this.state.images.slice(0);
+            const image = {
+                name: file.name,
+                url: src,
+                desc: '',
+                fileIndex: fileIndex,
+            };
+            newImages.push(image);
+            this.setState({
+                images: newImages,
+                localFiles: newFiles,
+                nextFileIndex: newFileIndex,
+                saveCallback: saveCallback
+            });
+            this.props.requireSave();
+        }
+    }
+
+    removeImage(imageIndex) {
+
+    }
+
     onChange(event) {
         clearTimeout(this.state.saveCallback);
         const saveCallback = setTimeout(this.saveChanges, 1500);
-        this.setState({
-            [event.target.id]: event.target.value,
-            saveCallback: saveCallback,
-        });
+        this.setState({ [event.target.id]: event.target.value, saveCallback: saveCallback });
         this.props.requireSave();
     }
 
@@ -119,13 +156,19 @@ class StoreTab extends Component {
                 images: this.state.images,
             },
         });
-        this.props.save(newUserData, DataTypes.STORE);
+        const filesToUpload = [];
+        this.state.images.forEach((image) => {
+            if (typeof image.fileIndex !== 'undefined') {
+                filesToUpload.push(this.state.localFiles[image.fileIndex]);
+            }
+        })
+        this.props.save(newUserData, DataTypes.STORE, filesToUpload);
     }
 
     render() {
         return (
             <ContentPanel isSaving={this.props.isSaving}>
-                <Form success={false} error={this.props.error} onSubmit={this.login}>
+                <Form success={false} error={Boolean(this.props.error)} onSubmit={this.login}>
                     <Message error header='오류' content={this.props.error} />
                     <Grid>
                         <Grid.Column width={1} />
@@ -242,9 +285,27 @@ class StoreTab extends Component {
                                 <Divider hidden section />
                             </div>
                             <Divider hidden section />
-                            {/* Amenities */}
+                            {/* Images */}
                             <div>
+                                <Label basic color='blue' className='no-border option-btn'
+                                    style={{ float: 'right' }}
+                                    onClick={() => { document.getElementById('imgSelector').click() }}>
+                                    {this.addImageTxt}
+                                </Label>
+                                <input id='imgSelector' type='file' onChange={this.addImage} hidden />
                                 <Header as='h3' dividing>{this.headerTxt3}</Header>
+                                <Grid>
+                                    {
+                                        this.state.images.map((image, index) => (
+                                            <Grid.Column key={index} width={4}>
+                                                <Label>{image.name}</Label>
+                                                <Image src={image.url} referrerPolicy='origin' centered />
+                                                <input type='text' value={image.desc} />
+                                                {/* <ImageBox /> */}
+                                            </Grid.Column>
+                                        ))
+                                    }
+                                </Grid>
                                 <Divider hidden section />
                             </div>
                         </Grid.Column>

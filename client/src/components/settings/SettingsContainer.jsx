@@ -60,7 +60,7 @@ const mapDispatchToProps = dispatch => {
         showChangeEmailModal: () => dispatch(showModal(ModalTypes.CHANGE_EMAIL)),
         showChangePasswordModal: () => dispatch(showModal(ModalTypes.CHANGE_PASSWORD)),
         requireSave: () => dispatch(requireSave()),
-        save: (userData, dataType) => dispatch(save(userData, dataType)),
+        save: (userData, dataType, files) => dispatch(save(userData, dataType, files)),
 
     };
 }

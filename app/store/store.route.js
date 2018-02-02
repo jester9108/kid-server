@@ -129,21 +129,22 @@ module.exports = (oAuth) => {
         }
     });
 
-    router.post('/:storeId/admin-setting', async (req, res, next) => {
+    router.post('/:storeId/admin-setting', upload.none(), async (req, res, next) => {
         try {
             const store = req.store;
-            const newStore = req.body;
-            res.json(await storeService.updateAdmin(store, newStore));
+            const newAdminSettings = JSON.parse(req.body.admin);
+            res.json(await storeService.updateAdmin(store, newAdminSettings));
         } catch (err) {
             next(err);
         }
     });
 
-    router.post('/:storeId/store-setting', async (req, res, next) => {
+    router.post('/:storeId/store-setting', upload.any(), async (req, res, next) => {
         try {
             const store = req.store;
-            const newStore = req.body;
-            res.json(await storeService.updateStore(store, newStore));
+            const newStoreSettings = JSON.parse(req.body.store);
+            const imagesToUpload = req.files;
+            res.json(await storeService.updateStore(store, newStoreSettings, imagesToUpload));
         } catch (err) {
             next(err);
         }

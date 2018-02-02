@@ -256,7 +256,7 @@ export function saveFailure(error) {
     return { type: SAVE_FAILURE, error: error };
 }
 
-export function save(newUserData, dataType) {
+export function save(newUserData, dataType, files) {
     return function (dispatch, getState) {
 
         // Get access token
@@ -264,21 +264,34 @@ export function save(newUserData, dataType) {
         if (!accessToken) return null;
 
         // Prepare payload
+        const payload = new FormData();
         let endpoint;
         if (dataType === DataTypes.ADMIN) {
             endpoint = '/admin-setting';
+            payload.append('admin', JSON.stringify(newUserData.admin));
         } else if (dataType === DataTypes.STORE) {
             endpoint = '/store-setting';
+            payload.append('store', JSON.stringify(newUserData.store));
+            files.forEach((file, index) => {
+                payload.append(`file_${index}`, file);
+            });
         }
 
+        const keys = payload.keys();
+        let entry = keys.next();
+        while (entry.value) {
+            console.log(entry.value + ': ' + JSON.stringify(payload.get(entry.value)));
+            entry = keys.next()
+        }
         // Make request
         return fetch(`${storeAPI}/me${endpoint}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
+                // Do not include 'Content-Type' header so that browser can fill boundary itself
+                // 'Content-Type': 'multipart/form-data'
             },
-            body: JSON.stringify(newUserData),
+            body: payload,
         })
             .then(response => response.json())
             .then((response) => {
