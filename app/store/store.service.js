@@ -3,6 +3,7 @@
 'use strict';
 
 const jwt = require('jsonwebtoken');
+const aws = require('../aws/aws.service');
 const logger = require('../utils').logger;
 const Store = require('./store.model').Model;
 const authMessage = require('../auth/auth.message');
@@ -91,27 +92,6 @@ class StoreService {
 
     async update(store, newStore, settingType) {
         try {
-            switch (settingType) {
-                case constants.SettingType.admin:
-                    store.admin.name = newStore.admin.name;
-                    store.admin.phone = newStore.admin.phone;
-                    break;
-                case constants.SettingType.store:
-                    store.store = newStore.store;
-                    break;
-                case constants.SettingType.menu:
-                    break;
-                case constants.SettingType.product:
-                    break;
-                case constants.SettingType.bankAccount:
-                    break;
-                case constants.SettingType.email:
-                    break;
-                case constants.SettingType.password:
-                    break;
-                default:
-                    break;
-            }
             await store.save();
             return {
                 success: true,
@@ -123,12 +103,71 @@ class StoreService {
         }
     }
 
-    async updateAdmin(store, newStore) {
-        return this.update(store, newStore, constants.SettingType.admin);
+    async updateAdmin(store, newAdminSettings) {
+        try {
+            store.admin.name = newAdminSettings.name;
+            store.admin.phone = newAdminSettings.phone;
+            return this.update(store);
+        } catch (err) {
+            throw err;
+        }
     }
 
-    async updateStore(store, newStore) {
-        return this.update(store, newStore, constants.SettingType.store);
+    async updateStore(store, newStoreSettings, imagesToUpload) {
+        try {
+            store.store.name = newStoreSettings.name;
+            store.store.address = newStoreSettings.address;
+            store.store.description = newStoreSettings.description;
+            store.store.phone = newStoreSettings.phone;
+            store.store.website = newStoreSettings.website;
+            store.store.tag = newStoreSettings.tag;
+            store.store.age = newStoreSettings.age;
+            store.store.maxCapacity = newStoreSettings.maxCapacity;
+            store.store.openHour = newStoreSettings.openHour;
+            store.store.amenities = newStoreSettings.amenities;
+
+            const uploadingImageIndices = [];
+            store.store.images = newStoreSettings.images.map((newImage) => {
+                if (newImage._id) {
+                    let imageIndex;
+                    store.store.images.forEach((savedImage, index) => {
+                        if (savedImage.id === newImage._id) {
+                            savedImage.desc = newImage.desc;
+                            imageIndex = index;
+                        }
+                    });
+                    if (typeof imageIndex === 'undefined') {
+                        return null;
+                    }
+                    return store.store.images[imageIndex];
+                } else if (typeof newImage.fileIndex !== 'undefined') {
+                    const match = imagesToUpload.filter(file => file.fieldname === `file_${newImage.fileIndex}`);
+                    if (match.length === 0) return null;
+                    newImage.file = match[0];
+                    return newImage;
+                }
+                return null;
+            }).filter(image => image !== null);
+
+            const uploadRequests = [];
+            store.store.images.forEach((image, index) => {
+                if (image.file) {
+                    uploadRequests.push(new Promise((resolve, reject) => {
+                        aws.uploadToBucket('kid-businesses', store, 'images', image.file, image.id)
+                            .then((uploadResult) => {
+                                store.store.images[index].url = uploadResult.Location;
+                                store.store.images[index].file = null;
+                                resolve();
+                            })
+                            .catch(error => reject(error));
+                    }));
+                }
+            });
+            await Promise.all(uploadRequests);
+            return this.update(store);
+        } catch (err) {
+            throw err;
+        }
     }
 
     async deleteStore(store) {

@@ -40,7 +40,15 @@ const SettingsSchema = new mongoose.Schema({
         required: false,
     },
     amenities: { type: [String], enum: Object.values(AmenityType), required: false },
-    images: { type: [String], required: false },
+    images: {
+        type: [{
+            name: { type: String, required: true },
+            url: { type: String, required: true },
+            desc: { type: String, required: false },
+            file: { type: Object, required: false },
+        }],
+        required: false,
+    },
 });
 const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
